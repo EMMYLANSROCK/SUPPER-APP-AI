@@ -1,0 +1,3150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NovaMind AI Super App</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+color:white;
+}
+
+/* BACKGROUND */
+#bg{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background-size:cover;
+background-position:center;
+transition:2s ease-in-out;
+z-index:-2;
+}
+
+#overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.55);
+z-index:-1;
+}
+
+/* HEADER */
+.topBar{
+text-align:center;
+padding:18px;
+font-size:22px;
+font-weight:bold;
+background:rgba(0,0,0,0.7);
+}
+
+.greet{
+text-align:center;
+color:#93c5fd;
+margin-top:5px;
+}
+
+.contactBar{
+text-align:center;
+padding:10px;
+background:#111827;
+}
+
+/* BUTTONS */
+button{
+padding:10px;
+margin:5px;
+border:none;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.blue{background:#2563eb;color:white;width:100%}
+.green{background:#16a34a;color:white;width:100%}
+.orange{background:#f59e0b;color:black}
+
+.page{display:none;padding:20px;}
+.active{display:block}
+
+.homeBox{
+width:420px;
+margin:auto;
+margin-top:40px;
+background:#111827;
+padding:25px;
+border-radius:15px;
+text-align:center;
+}
+
+.box{
+background:#111827;
+padding:20px;
+border-radius:15px;
+width:520px;
+margin:auto;
+text-align:center;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:8px;
+border-radius:8px;
+border:none;
+background:#0b1220;
+color:white;
+}
+
+.result{
+background:#0b1220;
+padding:10px;
+margin-top:10px;
+border-radius:10px;
+text-align:left;
+}
+
+.mathGrid{
+display:flex;
+gap:15px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+.card{
+width:300px;
+background:#111827;
+padding:15px;
+border-radius:15px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- BACKGROUND -->
+<div id="bg"></div>
+<div id="overlay"></div>
+
+<!-- HEADER -->
+<div class="topBar">
+🤖 EMMYLANSROCK ENGINE — NovaMind AI Super App
+</div>
+
+<div class="greet" id="greet"></div>
+
+<div class="contactBar">
+📞 0791953420 |
+<a href="https://wa.me/250734822070" target="_blank" style="color:#25D366;text-decoration:none;">
+🟢 WhatsApp Chat
+</a>
+</div>
+
+<!-- HOME -->
+<div id="home" class="page active">
+<div class="homeBox">
+<h2>🌟 NovaMind AI Super App</h2>
+<button class="blue" onclick="openPage('english')">📚 English AI</button>
+<button class="green" onclick="openPage('math')">📐 Math AI</button>
+</div>
+</div>
+
+<!-- ENGLISH -->
+<div id="english" class="page">
+<button class="orange" onclick="openPage('home')">🏠 Home</button>
+
+<div class="box">
+<h2>📚 English AI</h2>
+<input id="word" placeholder="type verb">
+
+<button onclick="smartAI()">Search</button>
+  <button onclick="showExamples()">Examples</button>
+<button onclick="speak()">🔊 Speak</button>
+
+<div class="result" id="res">Ready...</div>
+</div>
+</div>
+
+<!-- MATH -->
+<div id="math" class="page">
+<button class="orange" onclick="openPage('home')">🏠 Home</button>
+
+<div class="mathGrid">
+
+<div class="card">
+<h3>📊 Arithmetic</h3>
+<input id="expr" placeholder="12+34-11">
+
+<button onclick="addSymbol('1')">1</button>
+<button onclick="addSymbol('2')">2</button>
+<button onclick="addSymbol('3')">3</button>
+<button onclick="addSymbol('4')">4</button>
+<button onclick="addSymbol('5')">5</button>
+<button onclick="addSymbol('6')">6</button>
+<button onclick="addSymbol('7')">7</button>
+<button onclick="addSymbol('8')">8</button>
+<button onclick="addSymbol('9')">9</button>
+<button onclick="addSymbol('0')">0</button>
+
+<button onclick="addSymbol('+')">+</button>
+<button onclick="addSymbol('-')">-</button>
+<button onclick="addSymbol('*')">×</button>
+<button onclick="addSymbol('/')">÷</button>
+
+<button onclick="clearExpr()">C</button>
+<button onclick="calculate()">= RESULT</button>
+
+<div class="result" id="r1"></div>
+</div>
+
+<div class="card">
+<h3>📐 Trigonometry</h3>
+<input id="ang" placeholder="Enter angle">
+<button onclick="getAllTrig()">GET RESULTS</button>
+<div class="result" id="r2"></div>
+</div>
+
+<div class="card">
+<h3>📦 Geometry</h3>
+<button onclick="shape('square')">Square</button>
+<button onclick="shape('rect')">Rectangle</button>
+<button onclick="shape('circle')">Circle</button>
+<button onclick="shape('triangle')">Triangle</button>
+<button onclick="shape('tube')">Tube</button>
+<div class="result" id="r3"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+function showExamples() {
+  const input = document.getElementById('word');
+  const output = document.getElementById("res");
+
+  if (!input || !output) {
+    alert("Search input or result area not found.");
+    return;
+  }
+
+  const word = input.value.trim().toLowerCase();
+
+  const examples = {
+abandon: {
+  present: "They abandon old habits.",
+  past: "They abandoned the old plan yesterday.",
+  future: "They will abandon the project if necessary.",
+  continuous: "They are abandoning the old building."
+},
+absorb: {
+  present: "Plants absorb water through their roots.",
+  past: "The soil absorbed the rain.",
+  future: "The sponge will absorb the water.",
+  continuous: "The soil is absorbing moisture."
+},
+accompany: {
+  present: "I accompany my sister to school.",
+  past: "I accompanied her yesterday.",
+  future: "I will accompany my friend tomorrow.",
+  continuous: "I am accompanying my mother now."
+},
+accuse: {
+  present: "People accuse him of cheating.",
+  past: "They accused him yesterday.",
+  future: "They will accuse the wrong person.",
+  continuous: "She is accusing him of lying."
+},
+adapt: {
+  present: "Animals adapt to their environment.",
+  past: "The family adapted quickly.",
+  future: "We will adapt to the new system.",
+  continuous: "The students are adapting to the changes."
+},
+adjust: {
+  present: "I adjust my chair before working.",
+  past: "I adjusted the settings yesterday.",
+  future: "I will adjust the timetable tomorrow.",
+  continuous: "I am adjusting the screen brightness."
+},
+affect: {
+  present: "Weather affects our plans.",
+  past: "The rain affected the match.",
+  future: "The decision will affect everyone.",
+  continuous: "The noise is affecting my concentration."
+},
+aim: {
+  present: "I aim for good results.",
+  past: "She aimed at the target yesterday.",
+  future: "We will aim for better results.",
+  continuous: "He is aiming at the target."
+},
+amuse: {
+  present: "Funny stories amuse children.",
+  past: "The clown amused the audience.",
+  future: "The show will amuse the guests.",
+  continuous: "The comedian is amusing the audience."
+},
+analyze: {
+  present: "I analyze data every week.",
+  past: "I analyzed the results yesterday.",
+  future: "I will analyze the information tomorrow.",
+  continuous: "I am analyzing the data now."
+},
+applaud: {
+  present: "The audience applauds the performers.",
+  past: "The audience applauded yesterday.",
+  future: "We will applaud the winners.",
+  continuous: "The audience is applauding now."
+},
+appoint: {
+  present: "The school appoints class leaders.",
+  past: "They appointed a new leader yesterday.",
+  future: "They will appoint a manager tomorrow.",
+  continuous: "The committee is appointing new members."
+},
+approve: {
+  present: "The manager approves the plans.",
+  past: "She approved the request yesterday.",
+  future: "They will approve the proposal tomorrow.",
+  continuous: "The board is approving the new plan."
+},
+arrest: {
+  present: "Police arrest suspects when there is sufficient legal grounds.",
+  past: "Police arrested the suspect yesterday.",
+  future: "The officers will arrest the suspect if authorized.",
+  continuous: "The police are arresting a suspect."
+},
+assemble: {
+  present: "Workers assemble the machines.",
+  past: "They assembled the equipment yesterday.",
+  future: "We will assemble the furniture tomorrow.",
+  continuous: "They are assembling the machine now."
+},
+attempt: {
+  present: "I attempt difficult exercises.",
+  past: "I attempted the question yesterday.",
+  future: "I will attempt the test tomorrow.",
+  continuous: "I am attempting a new challenge."
+},
+attend: {
+  present: "I attend lessons every weekday.",
+  past: "I attended a meeting yesterday.",
+  future: "I will attend the ceremony tomorrow.",
+  continuous: "I am attending an online lesson."
+},
+attract: {
+  present: "Bright colors attract attention.",
+  past: "The advertisement attracted many customers.",
+  future: "The event will attract visitors.",
+  continuous: "The display is attracting attention."
+},
+balance: {
+  present: "I balance a book on my head.",
+  past: "I balanced the box yesterday.",
+  future: "I will balance the objects carefully.",
+  continuous: "She is balancing on one foot."
+},
+ban: {
+  present: "The school bans cheating.",
+  past: "The authorities banned the activity last year.",
+  future: "The school will ban dangerous behavior.",
+  continuous: "The organization is banning the practice."
+},
+beat: {
+  present: "Our team beats its rivals sometimes.",
+  past: "Our team beat its rivals yesterday.",
+  future: "Our team will try to beat them tomorrow.",
+  continuous: "The team is beating its opponents."
+},
+beg: {
+  present: "The child begs for another story.",
+  past: "He begged for help yesterday.",
+  future: "They will beg for another chance.",
+  continuous: "The child is begging for attention."
+},
+bleed: {
+  present: "Small cuts sometimes bleed.",
+  past: "His finger bled yesterday.",
+  future: "The wound may bleed again.",
+  continuous: "The cut is bleeding."
+},
+bless: {
+  present: "They bless their children.",
+  past: "The family blessed the new home.",
+  future: "They will bless the couple tomorrow.",
+  continuous: "The priest is blessing the family."
+},
+bloom: {
+  present: "Flowers bloom in spring.",
+  past: "The flowers bloomed last month.",
+  future: "The roses will bloom soon.",
+  continuous: "The flowers are blooming now."
+},
+boast: {
+  present: "He boasts about his achievements.",
+  past: "He boasted about his prize yesterday.",
+  future: "He will boast about the victory.",
+  continuous: "He is boasting about his success."
+},
+calculate: {
+  present: "I calculate distances in mathematics.",
+  past: "I calculated the distance yesterday.",
+  future: "I will calculate the total tomorrow.",
+  continuous: "I am calculating the distance now."
+},
+carve: {
+  present: "Artists carve designs into wood.",
+  past: "He carved a wooden spoon yesterday.",
+  future: "She will carve a new design.",
+  continuous: "The artist is carving a figure."
+},
+cherish: {
+  present: "I cherish memories of my childhood.",
+  past: "She cherished the gift.",
+  future: "I will cherish this moment.",
+  continuous: "They are cherishing their time together."
+},
+classify: {
+  present: "Scientists classify animals into groups.",
+  past: "We classified the books yesterday.",
+  future: "I will classify the documents tomorrow.",
+  continuous: "The students are classifying the plants."
+},
+combine: {
+  present: "I combine theory with practice.",
+  past: "We combined the ingredients yesterday.",
+  future: "I will combine the two lists.",
+  continuous: "They are combining the materials."
+},
+compete: {
+  present: "Athletes compete in tournaments.",
+  past: "She competed last year.",
+  future: "They will compete tomorrow.",
+  continuous: "The athletes are competing now."
+},
+compose: {
+  present: "I compose short poems.",
+  past: "I composed a song yesterday.",
+  future: "She will compose a new melody.",
+  continuous: "He is composing a letter."
+},
+conclude: {
+  present: "I conclude my reports with a summary.",
+  past: "We concluded the meeting yesterday.",
+  future: "They will conclude the discussion tomorrow.",
+  continuous: "The speaker is concluding the presentation."
+},
+conduct: {
+  present: "Scientists conduct experiments.",
+  past: "They conducted research last year.",
+  future: "We will conduct a survey tomorrow.",
+  continuous: "The team is conducting an experiment."
+},
+confirm: {
+  present: "I confirm appointments by email.",
+  past: "She confirmed the booking yesterday.",
+  future: "They will confirm the date tomorrow.",
+  continuous: "I am confirming the details now."
+},
+conquer: {
+  present: "The team conquers difficult challenges.",
+  past: "The army conquered the city long ago.",
+  future: "We will conquer this challenge together.",
+  continuous: "The team is conquering new challenges."
+},
+construct: {
+  present: "Workers construct roads and bridges.",
+  past: "They constructed a new classroom.",
+  future: "They will construct a library next year.",
+  continuous: "Workers are constructing a bridge."
+},
+consult: {
+  present: "I consult my teacher when confused.",
+  past: "I consulted a doctor yesterday.",
+  future: "I will consult an expert tomorrow.",
+  continuous: "She is consulting her supervisor."
+},
+consume: {
+  present: "People consume food every day.",
+  past: "The machine consumed a lot of energy.",
+  future: "The device will consume less power.",
+  continuous: "The engine is consuming fuel."
+},
+copy: {
+  present: "I copy notes into my notebook.",
+  past: "I copied the paragraph yesterday.",
+  future: "I will copy the file tomorrow.",
+  continuous: "I am copying the document now."
+},
+cough: {
+  present: "Some people cough when they have a cold.",
+  past: "He coughed during the lesson.",
+  future: "I may cough if the air is dusty.",
+  continuous: "The child is coughing now."
+},
+crack: {
+  present: "Dry soil cracks in hot weather.",
+  past: "The glass cracked yesterday.",
+  future: "The old wall may crack further.",
+  continuous: "The ice is cracking."
+},
+crawl: {
+  present: "Babies crawl before they walk.",
+  past: "The baby crawled yesterday.",
+  future: "The baby will crawl toward the toy.",
+  continuous: "The baby is crawling across the floor."
+},
+decorate: {
+  present: "We decorate the classroom for celebrations.",
+  past: "We decorated the room yesterday.",
+  future: "I will decorate the hall tomorrow.",
+  continuous: "They are decorating the classroom."
+},
+delay: {
+  present: "Heavy traffic delays buses.",
+  past: "The rain delayed the match.",
+  future: "The storm will delay our journey.",
+  continuous: "The problem is delaying the work."
+},
+demand: {
+  present: "Customers demand good service.",
+  past: "They demanded an explanation yesterday.",
+  future: "The workers will demand better conditions.",
+  continuous: "The crowd is demanding answers."
+},
+demonstrate: {
+  present: "Teachers demonstrate scientific experiments.",
+  past: "She demonstrated the method yesterday.",
+  future: "I will demonstrate the process tomorrow.",
+  continuous: "The instructor is demonstrating the technique."
+},
+deserve: {
+  present: "Hard-working students deserve recognition.",
+  past: "She deserved the award.",
+  future: "You will deserve praise for your effort.",
+  continuous: "He is earning the recognition he deserves."
+},
+detect: {
+  present: "Sensors detect movement.",
+  past: "The machine detected a problem yesterday.",
+  future: "The system will detect errors automatically.",
+  continuous: "The device is detecting a signal."
+},
+determine: {
+  present: "We determine the answer using evidence.",
+  past: "We determined the cause yesterday.",
+  future: "They will determine the date tomorrow.",
+  continuous: "The researchers are determining the results."
+},
+disappoint: {
+  present: "Broken promises disappoint people.",
+  past: "The result disappointed him yesterday.",
+  future: "The delay will disappoint some visitors.",
+  continuous: "The poor service is disappointing customers."
+},
+distribute: {
+  present: "Teachers distribute books to students.",
+  past: "They distributed food yesterday.",
+  future: "We will distribute the forms tomorrow.",
+  continuous: "The volunteers are distributing supplies."
+},
+edit: {
+  present: "I edit my essays carefully.",
+  past: "I edited the document yesterday.",
+  future: "I will edit the video tomorrow.",
+  continuous: "I am editing my assignment now."
+},
+emphasize: {
+  present: "Teachers emphasize the importance of reading.",
+  past: "The speaker emphasized safety yesterday.",
+  future: "I will emphasize the main points tomorrow.",
+  continuous: "She is emphasizing the key idea."
+},
+enable: {
+  present: "Technology enables people to communicate quickly.",
+  past: "The update enabled a new feature.",
+  future: "The change will enable faster access.",
+  continuous: "The team is enabling additional features."
+},
+establish: {
+  present: "The school establishes clear rules.",
+  past: "They established a club last year.",
+  future: "We will establish a new program.",
+  continuous: "The organization is establishing new offices."
+},
+estimate: {
+  present: "I estimate the cost before shopping.",
+  past: "I estimated the distance yesterday.",
+  future: "We will estimate the budget tomorrow.",
+  continuous: "I am estimating the total cost."
+},
+exceed: {
+  present: "The number exceeds our expectations.",
+  past: "Sales exceeded the target last month.",
+  future: "Demand will exceed supply soon.",
+  continuous: "The total is exceeding the limit."
+},
+exchange: {
+  present: "Students exchange ideas in class.",
+  past: "We exchanged books yesterday.",
+  future: "I will exchange the item tomorrow.",
+  continuous: "They are exchanging information now."
+},
+excuse: {
+  present: "I excuse small mistakes when appropriate.",
+  past: "She excused my late arrival.",
+  future: "The teacher will excuse the absence.",
+  continuous: "He is excusing the delay."
+},
+explore: {
+  present: "We explore new places during holidays.",
+  past: "We explored the town yesterday.",
+  future: "We will explore the museum tomorrow.",
+  continuous: "The students are exploring the garden."
+},
+export: {
+  present: "The country exports coffee.",
+  past: "The company exported goods last year.",
+  future: "They will export more products next year.",
+  continuous: "The company is exporting coffee."
+},
+face: {
+  present: "I face challenges with courage.",
+  past: "She faced a difficult question yesterday.",
+  future: "We will face new challenges tomorrow.",
+  continuous: "They are facing a difficult situation."
+},
+fasten: {
+  present: "I fasten my seat belt before driving.",
+  past: "I fastened the strap yesterday.",
+  future: "I will fasten the button tomorrow.",
+  continuous: "She is fastening her seat belt."
+},
+fear: {
+  present: "Some children fear the dark.",
+  past: "He feared the storm yesterday.",
+  future: "I will not fear the challenge.",
+  continuous: "She is fearing the worst."
+},
+file: {
+  present: "I file important documents carefully.",
+  past: "I filed the report yesterday.",
+  future: "I will file the application tomorrow.",
+  continuous: "I am filing the paperwork now."
+},
+filter: {
+  present: "This device filters dirty water.",
+  past: "We filtered the water yesterday.",
+  future: "The system will filter the liquid.",
+  continuous: "The machine is filtering the water."
+},
+finance: {
+  present: "The bank finances small businesses.",
+  past: "The organization financed the project.",
+  future: "They will finance the new building.",
+  continuous: "The company is financing the research."
+},
+focus: {
+  present: "I focus on my studies.",
+  past: "I focused on the task yesterday.",
+  future: "I will focus better tomorrow.",
+  continuous: "I am focusing on the lesson now."
+},
+forecast: {
+  present: "Experts forecast the weather.",
+  past: "They forecast heavy rain yesterday.",
+  future: "Experts will forecast tomorrow's conditions.",
+  continuous: "The team is forecasting future demand."
+},
+form: {
+  present: "Students form groups during activities.",
+  past: "We formed a team yesterday.",
+  future: "They will form a committee tomorrow.",
+  continuous: "The students are forming groups."
+},
+gather: {
+  present: "We gather information from books.",
+  past: "We gathered information yesterday.",
+  future: "We will gather more information tomorrow.",
+  continuous: "We are gathering information now."
+},
+generate: {
+  present: "The system generates reports automatically.",
+  past: "The program generated a report yesterday.",
+  future: "It will generate a new report tomorrow.",
+  continuous: "The computer is generating a report."
+},
+govern: {
+  present: "Laws govern how institutions operate.",
+  past: "The council governed the region.",
+  future: "The new rules will govern the process.",
+  continuous: "The committee is governing the organization."
+},
+graduate: {
+  present: "Students graduate after completing their studies.",
+  past: "She graduated last year.",
+  future: "He will graduate next year.",
+  continuous: "She is graduating this month."
+},
+grip: {
+  present: "I grip the handle firmly.",
+  past: "He gripped the rope yesterday.",
+  future: "I will grip the tool carefully.",
+  continuous: "She is gripping the handle."
+},
+heal: {
+  present: "Small wounds usually heal naturally.",
+  past: "The wound healed last week.",
+  future: "The injury will heal with time.",
+  continuous: "The wound is healing well."
+},
+highlight: {
+  present: "I highlight important words in my notes.",
+  past: "I highlighted the main points yesterday.",
+  future: "I will highlight the key ideas tomorrow.",
+  continuous: "I am highlighting the important sentences."
+},
+illustrate: {
+  present: "Pictures illustrate difficult concepts.",
+  past: "The teacher illustrated the idea yesterday.",
+  future: "I will illustrate the process tomorrow.",
+  continuous: "She is illustrating the story."
+},
+import: {
+  present: "The shop imports electronic equipment.",
+  past: "The company imported new machines last year.",
+  future: "They will import more goods next month.",
+  continuous: "The company is importing equipment."
+},
+inspect: {
+  present: "Workers inspect machines regularly.",
+  past: "The engineer inspected the machine yesterday.",
+  future: "They will inspect the building tomorrow.",
+  continuous: "The engineer is inspecting the equipment."
+},
+install: {
+  present: "I install useful applications on my computer.",
+  past: "I installed the program yesterday.",
+  future: "I will install the update tomorrow.",
+  continuous: "I am installing the software now."
+},
+instruct: {
+  present: "Teachers instruct students carefully.",
+  past: "The trainer instructed us yesterday.",
+  future: "She will instruct the new workers tomorrow.",
+  continuous: "He is instructing the class now."
+},
+interview: {
+  present: "The company interviews applicants every week.",
+  past: "They interviewed me yesterday.",
+  future: "I will interview the candidate tomorrow.",
+  continuous: "The manager is interviewing an applicant."
+},
+invest: {
+  present: "They invest money in their business.",
+  past: "She invested in the company last year.",
+  future: "We will invest more money next year.",
+  continuous: "They are investing in new technology."
+},
+irritate: {
+  present: "Loud noises irritate some people.",
+  past: "The noise irritated me yesterday.",
+  future: "The constant sound will irritate the neighbors.",
+  continuous: "The buzzing is irritating everyone."
+},
+jog: {
+  present: "I jog around the field every morning.",
+  past: "I jogged yesterday.",
+  future: "I will jog tomorrow morning.",
+  continuous: "I am jogging around the field now."
+},
+label: {
+  present: "I label my school notebooks.",
+  past: "I labeled the boxes yesterday.",
+  future: "I will label the files tomorrow.",
+  continuous: "I am labeling the folders now."
+},
+launch: {
+  present: "The company launches new products every year.",
+  past: "They launched the website yesterday.",
+  future: "They will launch the application tomorrow.",
+  continuous: "The team is launching a new service."
+},
+lead: {
+  present: "She leads the school club.",
+  past: "She led the meeting yesterday.",
+  future: "She will lead the team tomorrow.",
+  continuous: "She is leading the discussion."
+},
+leap: {
+  present: "Frogs leap across small streams.",
+  past: "The frog leaped into the water.",
+  future: "The athlete will leap over the barrier.",
+  continuous: "The frog is leaping across the pond."
+},
+maintain: {
+  present: "I maintain my computer regularly.",
+  past: "They maintained the road last year.",
+  future: "We will maintain the equipment tomorrow.",
+  continuous: "The workers are maintaining the road."
+},
+manufacture: {
+  present: "The factory manufactures school desks.",
+  past: "The factory manufactured new tools last year.",
+  future: "It will manufacture more products next year.",
+  continuous: "The factory is manufacturing new parts."
+},
+monitor: {
+  present: "Teachers monitor students' progress.",
+  past: "We monitored the system yesterday.",
+  future: "I will monitor the results tomorrow.",
+  continuous: "The technician is monitoring the network."
+},
+motivate: {
+  present: "Good teachers motivate their students.",
+  past: "The coach motivated the team yesterday.",
+  future: "I will motivate my classmates tomorrow.",
+  continuous: "She is motivating the students now."
+},
+negotiate: {
+  present: "Businesses negotiate contracts.",
+  past: "They negotiated the price yesterday.",
+  future: "We will negotiate the agreement tomorrow.",
+  continuous: "The two sides are negotiating a deal."
+},
+observe: {
+  present: "Scientists observe changes in nature.",
+  past: "We observed the birds yesterday.",
+  future: "I will observe the experiment tomorrow.",
+  continuous: "The students are observing the insects."
+},
+obtain: {
+  present: "I obtain information from reliable sources.",
+  past: "She obtained permission yesterday.",
+  future: "I will obtain the certificate tomorrow.",
+  continuous: "They are obtaining the necessary documents."
+},
+occupy: {
+  present: "Students occupy the front seats.",
+  past: "The group occupied the hall yesterday.",
+  future: "The event will occupy the entire afternoon.",
+  continuous: "The workers are occupying the meeting room."
+},
+overcome: {
+  present: "I overcome difficulties through practice.",
+  past: "She overcame her fear last year.",
+  future: "We will overcome this problem together.",
+  continuous: "They are overcoming many challenges."
+},
+participate: {
+  present: "I participate in school activities.",
+  past: "I participated in the competition yesterday.",
+  future: "I will participate next week.",
+  continuous: "She is participating in the discussion."
+},
+persuade: {
+  present: "I persuade my friends with good reasons.",
+  past: "He persuaded me yesterday.",
+  future: "She will persuade them to join.",
+  continuous: "He is persuading the group."
+},
+possess: {
+  present: "She possesses excellent communication skills.",
+  past: "He possessed a rare book.",
+  future: "She will possess the required skills after training.",
+  continuous: "She is developing the skills she needs."
+},
+predict: {
+  present: "Scientists predict changes in the climate.",
+  past: "They predicted rain yesterday.",
+  future: "Experts will predict future trends.",
+  continuous: "The system is predicting possible outcomes."
+},
+prevent: {
+  present: "Rules prevent common mistakes.",
+  past: "The barrier prevented access yesterday.",
+  future: "This measure will prevent further damage.",
+  continuous: "The new system is preventing errors."
+},
+process: {
+  present: "The computer processes information quickly.",
+  past: "The system processed the request yesterday.",
+  future: "It will process the application tomorrow.",
+  continuous: "The computer is processing the data."
+},
+promote: {
+  present: "The school promotes reading.",
+  past: "They promoted the event yesterday.",
+  future: "The company will promote its new service.",
+  continuous: "They are promoting the campaign."
+},
+prove: {
+  present: "I prove my answers with evidence.",
+  past: "She proved her point yesterday.",
+  future: "The experiment will prove the theory.",
+  continuous: "The team is proving its ability."
+},
+question: {
+  present: "Students question ideas respectfully.",
+  past: "I questioned the result yesterday.",
+  future: "We will question the decision tomorrow.",
+  continuous: "The reporter is questioning the witness."
+},
+ask: {
+  present: "I ask questions in class.",
+  past: "I asked a question yesterday.",
+  future: "I will ask a question tomorrow.",
+  continuous: "I am asking a question now."
+},
+answer: {
+  present: "I answer questions every day.",
+  past: "I answered the question yesterday.",
+  future: "I will answer it tomorrow.",
+  continuous: "I am answering the question now."
+},
+arrive: {
+  present: "I arrive at school early.",
+  past: "I arrived late yesterday.",
+  future: "I will arrive early tomorrow.",
+  continuous: "I am arriving at school now."
+},
+agree: {
+  present: "I agree with my teacher.",
+  past: "I agreed with her yesterday.",
+  future: "I will agree if the plan works.",
+  continuous: "I am agreeing to the new terms."
+},
+allow: {
+  present: "They allow students to ask questions.",
+  past: "They allowed us to enter.",
+  future: "They will allow visitors tomorrow.",
+  continuous: "They are allowing more students in."
+},
+appear: {
+  present: "Stars appear at night.",
+  past: "A rainbow appeared yesterday.",
+  future: "The results will appear tomorrow.",
+  continuous: "The sun is appearing through the clouds."
+},
+believe: {
+  present: "I believe your story.",
+  past: "I believed him yesterday.",
+  future: "I will believe you when I see proof.",
+  continuous: "I am beginning to believe the story."
+},
+belong: {
+  present: "This book belongs to me.",
+  past: "The bag belonged to my brother.",
+  future: "This prize will belong to the winner.",
+  continuous: "The book is belonging to the collection."
+},
+borrow: {
+  present: "I borrow books from the library.",
+  past: "I borrowed a pen yesterday.",
+  future: "I will borrow a book tomorrow.",
+  continuous: "I am borrowing a dictionary now."
+},
+breathe: {
+  present: "I breathe fresh air every morning.",
+  past: "I breathed slowly yesterday.",
+  future: "I will breathe deeply before the race.",
+  continuous: "I am breathing slowly now."
+},
+burn: {
+  present: "Dry wood burns quickly.",
+  past: "The candle burned all night.",
+  future: "The fire will burn for a while.",
+  continuous: "The candle is burning now."
+},
+call: {
+  present: "I call my grandmother every week.",
+  past: "I called her yesterday.",
+  future: "I will call her tomorrow.",
+  continuous: "I am calling her now."
+},
+carry: {
+  present: "I carry my bag to school.",
+  past: "I carried the boxes yesterday.",
+  future: "I will carry your bag tomorrow.",
+  continuous: "I am carrying the books now."
+},
+catch: {
+  present: "I catch the bus every morning.",
+  past: "I caught the bus yesterday.",
+  future: "I will catch the next bus.",
+  continuous: "I am catching the ball."
+},
+celebrate: {
+  present: "We celebrate birthdays together.",
+  past: "We celebrated her birthday yesterday.",
+  future: "We will celebrate tomorrow.",
+  continuous: "We are celebrating her success."
+},
+change: {
+  present: "I change my clothes every day.",
+  past: "I changed my plans yesterday.",
+  future: "I will change the schedule tomorrow.",
+  continuous: "I am changing my clothes now."
+},
+check: {
+  present: "I check my answers carefully.",
+  past: "I checked my work yesterday.",
+  future: "I will check the results tomorrow.",
+  continuous: "I am checking my answers now."
+},
+climb: {
+  present: "They climb the hill every year.",
+  past: "They climbed the hill yesterday.",
+  future: "They will climb the hill tomorrow.",
+  continuous: "They are climbing the hill now."
+},
+compare: {
+  present: "I compare prices before buying.",
+  past: "I compared the two books yesterday.",
+  future: "I will compare the results tomorrow.",
+  continuous: "I am comparing the pictures now."
+},
+complain: {
+  present: "Some customers complain about delays.",
+  past: "He complained yesterday.",
+  future: "She will complain if the service is poor.",
+  continuous: "He is complaining about the noise."
+},
+complete: {
+  present: "I complete my tasks on time.",
+  past: "I completed the assignment yesterday.",
+  future: "I will complete it tomorrow.",
+  continuous: "I am completing the assignment now."
+},
+consider: {
+  present: "I consider every suggestion.",
+  past: "I considered your idea yesterday.",
+  future: "I will consider the offer tomorrow.",
+  continuous: "I am considering your proposal."
+},
+continue: {
+  present: "I continue studying every evening.",
+  past: "I continued working yesterday.",
+  future: "I will continue tomorrow.",
+  continuous: "I am continuing my studies."
+},
+create: {
+  present: "I create drawings in my notebook.",
+  past: "I created a poster yesterday.",
+  future: "I will create a new design tomorrow.",
+  continuous: "I am creating a poster now."
+},
+cry: {
+  present: "Babies cry when they are hungry.",
+  past: "The baby cried last night.",
+  future: "The baby will cry if it is tired.",
+  continuous: "The baby is crying now."
+},
+decide: {
+  present: "I decide carefully.",
+  past: "I decided yesterday.",
+  future: "I will decide tomorrow.",
+  continuous: "I am deciding what to study."
+},
+deliver: {
+  present: "They deliver letters every morning.",
+  past: "They delivered the package yesterday.",
+  future: "They will deliver it tomorrow.",
+  continuous: "They are delivering the package now."
+},
+depend: {
+  present: "Success depends on effort.",
+  past: "The result depended on the weather.",
+  future: "The plan will depend on our budget.",
+  continuous: "The project is depending on outside support."
+},
+describe: {
+  present: "I describe pictures in English.",
+  past: "I described the event yesterday.",
+  future: "I will describe the place tomorrow.",
+  continuous: "I am describing the picture now."
+},
+develop: {
+  present: "Children develop new skills.",
+  past: "She developed a new idea.",
+  future: "We will develop the project next year.",
+  continuous: "We are developing a new application."
+},
+discover: {
+  present: "Scientists discover new things.",
+  past: "They discovered a new plant.",
+  future: "We will discover more details tomorrow.",
+  continuous: "They are discovering new information."
+},
+discuss: {
+  present: "We discuss lessons in class.",
+  past: "We discussed the topic yesterday.",
+  future: "We will discuss it tomorrow.",
+  continuous: "We are discussing the topic now."
+},
+divide: {
+  present: "I divide the work equally.",
+  past: "I divided the cake yesterday.",
+  future: "I will divide the class into groups.",
+  continuous: "I am dividing the papers now."
+},
+drop: {
+  present: "I drop coins into the box.",
+  past: "I dropped my pencil yesterday.",
+  future: "I will drop the package off tomorrow.",
+  continuous: "I am dropping the papers into the box."
+},
+earn: {
+  present: "She earns money from her work.",
+  past: "She earned money last month.",
+  future: "She will earn more next year.",
+  continuous: "She is earning money now."
+},
+encourage: {
+  present: "Teachers encourage students to learn.",
+  past: "My teacher encouraged me yesterday.",
+  future: "I will encourage my friend tomorrow.",
+  continuous: "They are encouraging the team."
+},
+enjoy: {
+  present: "I enjoy reading stories.",
+  past: "I enjoyed the lesson yesterday.",
+  future: "I will enjoy the trip tomorrow.",
+  continuous: "I am enjoying the music."
+},
+enter: {
+  present: "I enter the classroom quietly.",
+  past: "I entered the room yesterday.",
+  future: "I will enter the competition tomorrow.",
+  continuous: "I am entering the building now."
+},
+escape: {
+  present: "Birds sometimes escape from cages.",
+  past: "The bird escaped yesterday.",
+  future: "The animal will escape if the gate is open.",
+  continuous: "The cat is escaping through the gate."
+},
+expect: {
+  present: "I expect good results.",
+  past: "I expected a visitor yesterday.",
+  future: "I will expect your reply tomorrow.",
+  continuous: "I am expecting a delivery."
+},
+explain: {
+  present: "Teachers explain difficult ideas.",
+  past: "She explained the lesson yesterday.",
+  future: "I will explain it tomorrow.",
+  continuous: "He is explaining the rules now."
+},
+fail: {
+  present: "Sometimes students fail tests.",
+  past: "He failed the test yesterday.",
+  future: "I will not fail if I prepare.",
+  continuous: "The machine is failing again."
+},
+fill: {
+  present: "I fill my bottle with water.",
+  past: "I filled the bottle yesterday.",
+  future: "I will fill the form tomorrow.",
+  continuous: "I am filling the form now."
+},
+finish: {
+  present: "I finish school at four o'clock.",
+  past: "I finished my work yesterday.",
+  future: "I will finish the task tomorrow.",
+  continuous: "I am finishing my homework now."
+},
+follow: {
+  present: "I follow the instructions carefully.",
+  past: "I followed the directions yesterday.",
+  future: "I will follow your advice.",
+  continuous: "I am following the guide now."
+},
+forgive: {
+  present: "I forgive people who apologize.",
+  past: "She forgave her friend.",
+  future: "I will forgive him when he apologizes.",
+  continuous: "She is learning to forgive."
+},
+grow: {
+  present: "Plants grow in good soil.",
+  past: "The plant grew quickly last year.",
+  future: "The tree will grow taller.",
+  continuous: "The plants are growing well."
+},
+guess: {
+  present: "I guess the answer sometimes.",
+  past: "I guessed correctly yesterday.",
+  future: "I will guess the answer.",
+  continuous: "I am guessing the answer now."
+},
+happen: {
+  present: "Accidents happen unexpectedly.",
+  past: "The event happened yesterday.",
+  future: "The meeting will happen tomorrow.",
+  continuous: "Something unusual is happening now."
+},
+hate: {
+  present: "I hate wasting time.",
+  past: "I hated that noise yesterday.",
+  future: "I will hate missing the event.",
+  continuous: "I am beginning to hate this noise."
+},
+hide: {
+  present: "Children hide during the game.",
+  past: "He hid behind the door.",
+  future: "I will hide the gift until tomorrow.",
+  continuous: "The children are hiding now."
+},
+hit: {
+  present: "The player hits the ball carefully.",
+  past: "He hit the ball yesterday.",
+  future: "She will hit the ball next.",
+  continuous: "He is hitting the ball now."
+},
+hold: {
+  present: "I hold the door for others.",
+  past: "I held the baby yesterday.",
+  future: "I will hold the meeting tomorrow.",
+  continuous: "I am holding the book now."
+},
+hope: {
+  present: "I hope for good results.",
+  past: "I hoped for success.",
+  future: "I will hope for the best.",
+  continuous: "I am hoping for good news."
+},
+imagine: {
+  present: "I imagine new stories.",
+  past: "I imagined a different ending.",
+  future: "I will imagine new possibilities.",
+  continuous: "I am imagining a new world."
+},
+improve: {
+  present: "I improve my English every day.",
+  past: "I improved my writing last month.",
+  future: "I will improve with practice.",
+  continuous: "I am improving my skills."
+},
+include: {
+  present: "The list includes ten names.",
+  past: "The list included my name.",
+  future: "The plan will include everyone.",
+  continuous: "We are including more examples."
+},
+increase: {
+  present: "Prices increase from time to time.",
+  past: "The price increased last month.",
+  future: "The number will increase next year.",
+  continuous: "The number is increasing now."
+},
+introduce: {
+  present: "I introduce myself to new students.",
+  past: "She introduced her friend yesterday.",
+  future: "I will introduce the speaker tomorrow.",
+  continuous: "He is introducing the new student."
+},
+invite: {
+  present: "I invite my friends to parties.",
+  past: "I invited her yesterday.",
+  future: "I will invite them tomorrow.",
+  continuous: "I am inviting guests now."
+},
+join: {
+  present: "I join the club every year.",
+  past: "I joined the team last month.",
+  future: "I will join the meeting tomorrow.",
+  continuous: "I am joining the online class now."
+},
+jump: {
+  present: "The children jump over the line.",
+  past: "The child jumped yesterday.",
+  future: "The athlete will jump again.",
+  continuous: "The children are jumping now."
+},
+kick: {
+  present: "I kick the ball during practice.",
+  past: "He kicked the ball yesterday.",
+  future: "She will kick the ball next.",
+  continuous: "He is kicking the ball now."
+},
+laugh: {
+  present: "We laugh at funny stories.",
+  past: "We laughed at the joke yesterday.",
+  future: "We will laugh together again.",
+  continuous: "They are laughing now."
+},
+lend: {
+  present: "I lend books to my classmates.",
+  past: "I lent him my pen yesterday.",
+  future: "I will lend you my book tomorrow.",
+  continuous: "I am lending her my notes."
+},
+lie: {
+  present: "I lie on the sofa to rest.",
+  past: "I lay on the sofa yesterday.",
+  future: "I will lie down after lunch.",
+  continuous: "I am lying on the bed now."
+},
+lose: {
+  present: "I sometimes lose my pencils.",
+  past: "I lost my keys yesterday.",
+  future: "I will lose time if I delay.",
+  continuous: "I am losing my patience."
+},
+marry: {
+  present: "They marry according to their traditions.",
+  past: "They married last year.",
+  future: "They will marry next year.",
+  continuous: "They are getting married this month."
+},
+measure: {
+  present: "I measure the table before buying a cloth.",
+  past: "I measured the room yesterday.",
+  future: "I will measure the window tomorrow.",
+  continuous: "I am measuring the desk now."
+},
+miss: {
+  present: "I miss the bus sometimes.",
+  past: "I missed the bus yesterday.",
+  future: "I will miss the show if I arrive late.",
+  continuous: "I am missing my family."
+},
+move: {
+  present: "I move my chair every morning.",
+  past: "I moved the table yesterday.",
+  future: "I will move to a new house next month.",
+  continuous: "I am moving the boxes now."
+},
+notice: {
+  present: "I notice small details.",
+  past: "I noticed the mistake yesterday.",
+  future: "I will notice the difference.",
+  continuous: "I am noticing some changes."
+},
+offer: {
+  present: "They offer free lessons.",
+  past: "She offered me some help.",
+  future: "I will offer my assistance tomorrow.",
+  continuous: "He is offering help now."
+},
+order: {
+  present: "We order food at the restaurant.",
+  past: "We ordered lunch yesterday.",
+  future: "We will order dinner later.",
+  continuous: "I am ordering food now."
+},
+organize: {
+  present: "I organize my books every week.",
+  past: "I organized the meeting yesterday.",
+  future: "I will organize the files tomorrow.",
+  continuous: "I am organizing my desk now."
+},
+paint: {
+  present: "I paint pictures on weekends.",
+  past: "I painted the wall yesterday.",
+  future: "I will paint the fence tomorrow.",
+  continuous: "I am painting a picture now."
+},
+pass: {
+  present: "I pass the library every day.",
+  past: "I passed the exam last year.",
+  future: "I will pass the ball to you.",
+  continuous: "I am passing the shop now."
+},
+plan: {
+  present: "I plan my week every Sunday.",
+  past: "I planned the trip yesterday.",
+  future: "I will plan the event tomorrow.",
+  continuous: "I am planning my project now."
+},
+prepare: {
+  present: "I prepare my lessons every evening.",
+  past: "I prepared dinner yesterday.",
+  future: "I will prepare for the exam tomorrow.",
+  continuous: "I am preparing my notes now."
+},
+promise: {
+  present: "I promise to tell the truth.",
+  past: "He promised to help me.",
+  future: "I will promise only what I can do.",
+  continuous: "She is promising to return soon."
+},
+protect: {
+  present: "Helmets protect our heads.",
+  past: "The guard protected the building.",
+  future: "We will protect the environment.",
+  continuous: "They are protecting the animals."
+},
+reach: {
+  present: "I reach school before eight.",
+  past: "I reached home yesterday.",
+  future: "I will reach the station tomorrow.",
+  continuous: "We are reaching the final stage."
+},
+receive: {
+  present: "I receive emails every day.",
+  past: "I received a letter yesterday.",
+  future: "I will receive the results tomorrow.",
+  continuous: "I am receiving your messages now."
+},
+remember: {
+  present: "I remember my teacher's advice.",
+  past: "I remembered his name yesterday.",
+  future: "I will remember this lesson.",
+  continuous: "I am remembering more details."
+},
+repair: {
+  present: "They repair bicycles in this shop.",
+  past: "He repaired my radio yesterday.",
+  future: "She will repair the chair tomorrow.",
+  continuous: "They are repairing the road now."
+},
+repeat: {
+  present: "I repeat new words aloud.",
+  past: "I repeated the sentence yesterday.",
+  future: "I will repeat the answer tomorrow.",
+  continuous: "I am repeating the instructions now."
+},
+return: {
+  present: "I return books to the library.",
+  past: "I returned home yesterday.",
+  future: "I will return the book tomorrow.",
+  continuous: "I am returning home now."
+},
+save: {
+  present: "I save money every month.",
+  past: "I saved my document yesterday.",
+  future: "I will save enough money next year.",
+  continuous: "I am saving my work now."
+},
+share: {
+  present: "I share my notes with classmates.",
+  past: "I shared my lunch yesterday.",
+  future: "I will share the news tomorrow.",
+  continuous: "I am sharing my screen now."
+},
+shout: {
+  present: "People shout during the game.",
+  past: "He shouted for help yesterday.",
+  future: "They will shout if they are excited.",
+  continuous: "The children are shouting outside."
+},
+show: {
+  present: "I show my work to the teacher.",
+  past: "I showed her the picture yesterday.",
+  future: "I will show you the results tomorrow.",
+  continuous: "I am showing the class my project."
+},
+smile: {
+  present: "I smile when I see my friends.",
+  past: "She smiled at me yesterday.",
+  future: "I will smile for the photograph.",
+  continuous: "The baby is smiling now."
+},
+solve: {
+  present: "I solve mathematics problems every day.",
+  past: "I solved the problem yesterday.",
+  future: "I will solve it tomorrow.",
+  continuous: "I am solving the problem now."
+},
+steal: {
+  present: "Stealing is against the law.",
+  past: "Someone stole a bicycle yesterday.",
+  future: "The police will investigate the theft.",
+  continuous: "The thief is stealing a bag."
+},
+throw: {
+  present: "I throw the ball to my friend.",
+  past: "I threw the ball yesterday.",
+  future: "I will throw the ball next.",
+  continuous: "I am throwing the ball now."
+},
+touch: {
+  present: "I touch the screen to open the app.",
+  past: "I touched the button yesterday.",
+  future: "I will touch the screen again.",
+  continuous: "I am touching the screen now."
+},
+travel: {
+  present: "I travel during school holidays.",
+  past: "I traveled last month.",
+  future: "I will travel next year.",
+  continuous: "I am traveling by bus now."
+},
+trust: {
+  present: "I trust my close friends.",
+  past: "I trusted his advice.",
+  future: "I will trust you if you are honest.",
+  continuous: "I am learning to trust again."
+},
+visit: {
+  present: "I visit my grandparents every month.",
+  past: "I visited them last weekend.",
+  future: "I will visit them tomorrow.",
+  continuous: "I am visiting my aunt now."
+},
+vote: {
+  present: "Citizens vote in elections.",
+  past: "They voted in the last election.",
+  future: "They will vote in the next election.",
+  continuous: "People are voting today."
+},
+win: {
+  present: "Our team wins many matches.",
+  past: "Our team won yesterday.",
+  future: "Our team will try to win tomorrow.",
+  continuous: "Our team is winning now."
+},
+wish: {
+  present: "I wish everyone success.",
+  past: "I wished her good luck yesterday.",
+  future: "I will wish him well tomorrow.",
+  continuous: "I am wishing you success."
+},
+wonder: {
+  present: "I wonder about the future.",
+  past: "I wondered about the answer yesterday.",
+  future: "I will wonder about it later.",
+  continuous: "I am wondering what happened."
+},
+worry: {
+  present: "I worry about exams sometimes.",
+  past: "I worried about the test yesterday.",
+  future: "I will not worry about it tomorrow.",
+  continuous: "I am worrying about the results."
+},
+    read: {
+      present: "I read books every day.",
+      past: "I read a book yesterday.",
+      future: "I will read a book tomorrow.",
+      continuous: "I am reading a book now."
+    },
+write: {
+  present: "I write letters every week.",
+  past: "I wrote a letter yesterday.",
+  future: "I will write a letter tomorrow.",
+  continuous: "I am writing a letter now."
+},
+eat: {
+  present: "I eat breakfast every morning.",
+  past: "I ate breakfast yesterday.",
+  future: "I will eat breakfast tomorrow.",
+  continuous: "I am eating breakfast now."
+},
+drink: {
+  present: "I drink water every day.",
+  past: "I drank water yesterday.",
+  future: "I will drink water tomorrow.",
+  continuous: "I am drinking water now."
+},
+go: {
+  present: "I go to school every day.",
+  past: "I went to school yesterday.",
+  future: "I will go to school tomorrow.",
+  continuous: "I am going to school now."
+},
+come: {
+  present: "I come home early every day.",
+  past: "I came home early yesterday.",
+  future: "I will come home early tomorrow.",
+  continuous: "I am coming home now."
+},
+see: {
+  present: "I see my friends every day.",
+  past: "I saw my friend yesterday.",
+  future: "I will see my friend tomorrow.",
+  continuous: "I am seeing the doctor now."
+},
+do: {
+  present: "I do my homework every day.",
+  past: "I did my homework yesterday.",
+  future: "I will do my homework tomorrow.",
+  continuous: "I am doing my homework now."
+},
+make: {
+  present: "I make cakes every Sunday.",
+  past: "I made a cake yesterday.",
+  future: "I will make a cake tomorrow.",
+  continuous: "I am making a cake now."
+},
+take: {
+  present: "I take the bus every day.",
+  past: "I took the bus yesterday.",
+  future: "I will take the bus tomorrow.",
+  continuous: "I am taking the bus now."
+},
+give: {
+  present: "I give books to my friends.",
+  past: "I gave him a book yesterday.",
+  future: "I will give him a book tomorrow.",
+  continuous: "I am giving him a book now."
+},
+get: {
+  present: "I get up early every day.",
+  past: "I got up early yesterday.",
+  future: "I will get up early tomorrow.",
+  continuous: "I am getting ready now."
+},
+run: {
+  present: "I run every morning.",
+  past: "I ran yesterday.",
+  future: "I will run tomorrow.",
+  continuous: "I am running now."
+},
+walk: {
+  present: "I walk to school every day.",
+  past: "I walked to school yesterday.",
+  future: "I will walk to school tomorrow.",
+  continuous: "I am walking now."
+},
+play: {
+  present: "I play football every weekend.",
+  past: "I played football yesterday.",
+  future: "I will play football tomorrow.",
+  continuous: "I am playing football now."
+},
+study: {
+  present: "I study English every day.",
+  past: "I studied English yesterday.",
+  future: "I will study English tomorrow.",
+  continuous: "I am studying English now."
+},
+learn: {
+  present: "I learn new words every day.",
+  past: "I learned a new word yesterday.",
+  future: "I will learn more tomorrow.",
+  continuous: "I am learning English now."
+},
+teach: {
+  present: "I teach English every day.",
+  past: "I taught English yesterday.",
+  future: "I will teach English tomorrow.",
+  continuous: "I am teaching English now."
+},
+buy: {
+  present: "I buy food every week.",
+  past: "I bought food yesterday.",
+  future: "I will buy food tomorrow.",
+  continuous: "I am buying food now."
+},
+sell: {
+  present: "They sell clothes every day.",
+  past: "They sold clothes yesterday.",
+  future: "They will sell clothes tomorrow.",
+  continuous: "They are selling clothes now."
+},
+sleep: {
+  present: "I sleep early every night.",
+  past: "I slept early yesterday.",
+  future: "I will sleep early tonight.",
+  continuous: "I am sleeping now."
+},
+wake: {
+  present: "I wake up early every day.",
+  past: "I woke up early yesterday.",
+  future: "I will wake up early tomorrow.",
+  continuous: "I am waking up now."
+},
+cook: {
+  present: "I cook dinner every evening.",
+  past: "I cooked dinner yesterday.",
+  future: "I will cook dinner tomorrow.",
+  continuous: "I am cooking dinner now."
+},
+clean: {
+  present: "I clean my room every week.",
+  past: "I cleaned my room yesterday.",
+  future: "I will clean my room tomorrow.",
+  continuous: "I am cleaning my room now."
+},
+work: {
+  present: "I work every weekday.",
+  past: "I worked yesterday.",
+  future: "I will work tomorrow.",
+  continuous: "I am working now."
+},
+help: {
+  present: "I help my parents every day.",
+  past: "I helped my friend yesterday.",
+  future: "I will help you tomorrow.",
+  continuous: "I am helping my mother now."
+},
+open: {
+  present: "I open the door every morning.",
+  past: "I opened the door yesterday.",
+  future: "I will open the door tomorrow.",
+  continuous: "I am opening the door now."
+},
+close: {
+  present: "I close the window every evening.",
+  past: "I closed the window yesterday.",
+  future: "I will close the window tomorrow.",
+  continuous: "I am closing the window now."
+},
+speak: {
+  present: "I speak English every day.",
+  past: "I spoke English yesterday.",
+  future: "I will speak English tomorrow.",
+  continuous: "I am speaking English now."
+},
+listen: {
+  present: "I listen to music every day.",
+  past: "I listened to music yesterday.",
+  future: "I will listen to music tomorrow.",
+  continuous: "I am listening to music now."
+},
+hear: {
+  present: "I hear birds every morning.",
+  past: "I heard a bird yesterday.",
+  future: "I will hear the news tomorrow.",
+  continuous: "I am hearing a strange sound."
+},
+watch: {
+  present: "I watch television every evening.",
+  past: "I watched a movie yesterday.",
+  future: "I will watch a movie tomorrow.",
+  continuous: "I am watching television now."
+},
+look: {
+  present: "I look at the board every day.",
+  past: "I looked at the board yesterday.",
+  future: "I will look at the picture tomorrow.",
+  continuous: "I am looking at the picture now."
+},
+find: {
+  present: "I find useful books in the library.",
+  past: "I found my pen yesterday.",
+  future: "I will find the answer tomorrow.",
+  continuous: "I am finding new ways to learn."
+},
+think: {
+  present: "I think about my future every day.",
+  past: "I thought about the question yesterday.",
+  future: "I will think about it tomorrow.",
+  continuous: "I am thinking about the answer now."
+},
+know: {
+  present: "I know the answer.",
+  past: "I knew the answer yesterday.",
+  future: "I will know the results tomorrow.",
+  continuous: "I am getting to know my classmates."
+},
+understand: {
+  present: "I understand the lesson.",
+  past: "I understood the lesson yesterday.",
+  future: "I will understand it after practice.",
+  continuous: "I am understanding the topic better."
+},
+bring: {
+  present: "I bring my books to school.",
+  past: "I brought my books yesterday.",
+  future: "I will bring my books tomorrow.",
+  continuous: "I am bringing my books now."
+},
+send: {
+  present: "I send messages every day.",
+  past: "I sent a message yesterday.",
+  future: "I will send a message tomorrow.",
+  continuous: "I am sending a message now."
+},
+build: {
+  present: "They build houses every year.",
+  past: "They built a house last year.",
+  future: "They will build a house next year.",
+  continuous: "They are building a house now."
+},
+break: {
+  present: "I break old boxes for recycling.",
+  past: "I broke a cup yesterday.",
+  future: "I will break the old box apart tomorrow.",
+  continuous: "I am breaking the chocolate into pieces."
+},
+choose: {
+  present: "I choose a book every week.",
+  past: "I chose a book yesterday.",
+  future: "I will choose a book tomorrow.",
+  continuous: "I am choosing a new book now."
+},
+drive: {
+  present: "I drive to work every day.",
+  past: "I drove to work yesterday.",
+  future: "I will drive tomorrow.",
+  continuous: "I am driving to work now."
+},
+draw: {
+  present: "I draw pictures every weekend.",
+  past: "I drew a picture yesterday.",
+  future: "I will draw a picture tomorrow.",
+  continuous: "I am drawing a picture now."
+},
+sing: {
+  present: "I sing in the choir every Sunday.",
+  past: "I sang a song yesterday.",
+  future: "I will sing tomorrow.",
+  continuous: "I am singing a song now."
+},
+dance: {
+  present: "I dance at parties.",
+  past: "I danced yesterday.",
+  future: "I will dance tomorrow.",
+  continuous: "I am dancing now."
+},
+swim: {
+  present: "I swim every Saturday.",
+  past: "I swam yesterday.",
+  future: "I will swim tomorrow.",
+  continuous: "I am swimming now."
+},
+wash: {
+  present: "I wash my clothes every week.",
+  past: "I washed my clothes yesterday.",
+  future: "I will wash my clothes tomorrow.",
+  continuous: "I am washing my clothes now."
+},
+wait: {
+  present: "I wait for the bus every morning.",
+  past: "I waited for the bus yesterday.",
+  future: "I will wait for you tomorrow.",
+  continuous: "I am waiting for the bus now."
+},
+live: {
+  present: "I live in Rwanda.",
+  past: "I lived in Kigali last year.",
+  future: "I will live there next year.",
+  continuous: "I am living with my family now."
+},
+love: {
+  present: "I love my family.",
+  past: "I loved that book.",
+  future: "I will love learning English.",
+  continuous: "I am loving this experience."
+},
+
+    collect: {
+      present: "I collect books every week.",
+      past: "I collected books yesterday.",
+      future: "I will collect books tomorrow.",
+      continuous: "I am collecting books now."
+    },
+    gather: {
+      present: "We gather information every day.",
+      past: "We gathered information yesterday.",
+      future: "We will gather information tomorrow.",
+      continuous: "We are gathering information now."
+    },
+accept: {
+  present: "I accept new challenges.",
+  past: "I accepted the challenge yesterday.",
+  future: "I will accept the invitation tomorrow.",
+  continuous: "I am accepting applications now."
+},
+achieve: {
+  present: "I achieve my goals through hard work.",
+  past: "I achieved my goal last year.",
+  future: "I will achieve more goals.",
+  continuous: "I am achieving good results."
+},
+act: {
+  present: "I act responsibly at school.",
+  past: "I acted quickly yesterday.",
+  future: "I will act carefully tomorrow.",
+  continuous: "I am acting in a school play."
+},
+admire: {
+  present: "I admire my teachers.",
+  past: "I admired her work yesterday.",
+  future: "I will admire the artwork tomorrow.",
+  continuous: "I am admiring the beautiful view."
+},
+admit: {
+  present: "I admit my mistakes.",
+  past: "I admitted my mistake yesterday.",
+  future: "I will admit the truth.",
+  continuous: "I am admitting my mistake."
+},
+advise: {
+  present: "I advise students to study regularly.",
+  past: "I advised him yesterday.",
+  future: "I will advise you tomorrow.",
+  continuous: "I am advising a student now."
+},
+afford: {
+  present: "I afford simple meals every day.",
+  past: "I afforded the trip last year.",
+  future: "I will afford a new computer soon.",
+  continuous: "I am saving so I can afford a laptop."
+},
+announce: {
+  present: "They announce the results every year.",
+  past: "They announced the winner yesterday.",
+  future: "They will announce the results tomorrow.",
+  continuous: "They are announcing the winners now."
+},
+apologize: {
+  present: "I apologize when I make mistakes.",
+  past: "I apologized to my friend yesterday.",
+  future: "I will apologize tomorrow.",
+  continuous: "I am apologizing for the delay."
+},
+appreciate: {
+  present: "I appreciate your kindness.",
+  past: "I appreciated your help yesterday.",
+  future: "I will appreciate your support.",
+  continuous: "I am appreciating the opportunity."
+},
+argue: {
+  present: "They argue about small things.",
+  past: "They argued yesterday.",
+  future: "They will argue about the decision.",
+  continuous: "They are arguing about the rules."
+},
+attach: {
+  present: "I attach files to my emails.",
+  past: "I attached the document yesterday.",
+  future: "I will attach the file tomorrow.",
+  continuous: "I am attaching the documents now."
+},
+avoid: {
+  present: "I avoid unnecessary mistakes.",
+  past: "I avoided the traffic yesterday.",
+  future: "I will avoid that road tomorrow.",
+  continuous: "I am avoiding distractions."
+},
+bake: {
+  present: "I bake bread every weekend.",
+  past: "I baked a cake yesterday.",
+  future: "I will bake bread tomorrow.",
+  continuous: "I am baking a cake now."
+},
+behave: {
+  present: "The students behave well in class.",
+  past: "The students behaved well yesterday.",
+  future: "They will behave responsibly tomorrow.",
+  continuous: "The children are behaving well."
+},
+bend: {
+  present: "I bend my knees when exercising.",
+  past: "I bent the wire yesterday.",
+  future: "I will bend the paper carefully.",
+  continuous: "I am bending the wire now."
+},
+bite: {
+  present: "Some dogs bite when frightened.",
+  past: "The mosquito bit me yesterday.",
+  future: "The insect will bite if disturbed.",
+  continuous: "The puppy is biting its toy."
+},
+blow: {
+  present: "Winds blow strongly in this area.",
+  past: "The wind blew all night.",
+  future: "The wind will blow tomorrow.",
+  continuous: "The wind is blowing now."
+},
+boil: {
+  present: "Water boils at the correct temperature.",
+  past: "The water boiled yesterday.",
+  future: "The water will boil soon.",
+  continuous: "The water is boiling now."
+},
+book: {
+  present: "I book tickets online.",
+  past: "I booked a room yesterday.",
+  future: "I will book a ticket tomorrow.",
+  continuous: "I am booking a hotel room."
+},
+brush: {
+  present: "I brush my teeth every morning.",
+  past: "I brushed my teeth yesterday.",
+  future: "I will brush my teeth tonight.",
+  continuous: "I am brushing my teeth now."
+},
+calculate: {
+  present: "I calculate the total cost.",
+  past: "I calculated the answer yesterday.",
+  future: "I will calculate the result tomorrow.",
+  continuous: "I am calculating the total now."
+},
+cancel: {
+  present: "They cancel meetings when necessary.",
+  past: "They canceled the meeting yesterday.",
+  future: "They will cancel the event if needed.",
+  continuous: "They are canceling the reservation."
+},
+care: {
+  present: "I care about my family.",
+  past: "She cared for the children yesterday.",
+  future: "I will care for the plants tomorrow.",
+  continuous: "I am caring for my younger brother."
+},
+cause: {
+  present: "Heavy rain causes flooding.",
+  past: "The storm caused damage yesterday.",
+  future: "The delay will cause problems.",
+  continuous: "The broken pipe is causing trouble."
+},
+chase: {
+  present: "The dog chases the ball.",
+  past: "The dog chased the ball yesterday.",
+  future: "The dog will chase the ball again.",
+  continuous: "The dog is chasing the ball."
+},
+cheer: {
+  present: "Fans cheer for their team.",
+  past: "The crowd cheered yesterday.",
+  future: "We will cheer for our school.",
+  continuous: "The fans are cheering loudly."
+},
+chew: {
+  present: "I chew my food slowly.",
+  past: "I chewed the food carefully.",
+  future: "I will chew more slowly.",
+  continuous: "I am chewing my food now."
+},
+command: {
+  present: "The officer commands the team.",
+  past: "The officer commanded the team yesterday.",
+  future: "The officer will command the group.",
+  continuous: "The officer is commanding the team."
+},
+communicate: {
+  present: "I communicate with my classmates.",
+  past: "I communicated with them yesterday.",
+  future: "I will communicate with you tomorrow.",
+  continuous: "I am communicating with the teacher."
+},
+concentrate: {
+  present: "I concentrate during lessons.",
+  past: "I concentrated on my work yesterday.",
+  future: "I will concentrate better tomorrow.",
+  continuous: "I am concentrating on the exercise."
+},
+confess: {
+  present: "He confesses his mistakes honestly.",
+  past: "He confessed his mistake yesterday.",
+  future: "He will confess the truth.",
+  continuous: "He is confessing what happened."
+},
+connect: {
+  present: "I connect my phone to the internet.",
+  past: "I connected the printer yesterday.",
+  future: "I will connect the computer tomorrow.",
+  continuous: "I am connecting my phone now."
+},
+consist: {
+  present: "The team consists of ten players.",
+  past: "The group consisted of five members.",
+  future: "The committee will consist of new members.",
+  continuous: "The team is made up of ten players."
+},
+contain: {
+  present: "This box contains books.",
+  past: "The bag contained old papers.",
+  future: "The package will contain the documents.",
+  continuous: "The bottle is holding some water."
+},
+contribute: {
+  present: "I contribute ideas during meetings.",
+  past: "I contributed money last week.",
+  future: "I will contribute to the project.",
+  continuous: "I am contributing ideas now."
+},
+convince: {
+  present: "I convince my friends with evidence.",
+  past: "She convinced me yesterday.",
+  future: "I will convince them with facts.",
+  continuous: "He is convincing the committee."
+},
+count: {
+  present: "I count my books every month.",
+  past: "I counted the students yesterday.",
+  future: "I will count the money tomorrow.",
+  continuous: "I am counting the books now."
+},
+cover: {
+  present: "I cover my books with paper.",
+  past: "I covered the table yesterday.",
+  future: "I will cover the food later.",
+  continuous: "I am covering the books now."
+},
+cross: {
+  present: "I cross the road carefully.",
+  past: "I crossed the bridge yesterday.",
+  future: "I will cross the river tomorrow.",
+  continuous: "I am crossing the road now."
+},
+damage: {
+  present: "Strong winds damage buildings.",
+  past: "The storm damaged the roof.",
+  future: "The flood may damage the road.",
+  continuous: "The water is damaging the wall."
+},
+dare: {
+  present: "I dare to ask difficult questions.",
+  past: "She dared to speak yesterday.",
+  future: "I will dare to try again.",
+  continuous: "He is daring to challenge the rule."
+},
+deal: {
+  present: "I deal with problems calmly.",
+  past: "I dealt with the issue yesterday.",
+  future: "I will deal with it tomorrow.",
+  continuous: "I am dealing with a difficult task."
+},
+deny: {
+  present: "He denies the accusation.",
+  past: "He denied the claim yesterday.",
+  future: "She will deny the allegation.",
+  continuous: "He is denying the accusation."
+},
+design: {
+  present: "I design websites for practice.",
+  past: "I designed a poster yesterday.",
+  future: "I will design a new website.",
+  continuous: "I am designing an application now."
+},
+destroy: {
+  present: "Fire destroys property.",
+  past: "The storm destroyed the fence.",
+  future: "The flood could destroy the bridge.",
+  continuous: "The fire is destroying the old building."
+},
+dig: {
+  present: "Farmers dig the soil before planting.",
+  past: "We dug a hole yesterday.",
+  future: "We will dig the garden tomorrow.",
+  continuous: "They are digging a hole now."
+},
+disagree: {
+  present: "We sometimes disagree about ideas.",
+  past: "We disagreed yesterday.",
+  future: "We may disagree again tomorrow.",
+  continuous: "They are disagreeing about the plan."
+},
+disappear: {
+  present: "Clouds disappear when the sky clears.",
+  past: "The bird disappeared yesterday.",
+  future: "The fog will disappear soon.",
+  continuous: "The clouds are disappearing now."
+},
+download: {
+  present: "I download learning materials online.",
+  past: "I downloaded the file yesterday.",
+  future: "I will download the application tomorrow.",
+  continuous: "I am downloading the document now."
+},
+drag: {
+  present: "I drag the file into the folder.",
+  past: "I dragged the chair yesterday.",
+  future: "I will drag the box outside.",
+  continuous: "I am dragging the file now."
+},
+dress: {
+  present: "I dress neatly for school.",
+  past: "I dressed quickly yesterday.",
+  future: "I will dress formally tomorrow.",
+  continuous: "I am dressing for the ceremony."
+},
+educate: {
+  present: "Schools educate young people.",
+  past: "The program educated many children.",
+  future: "The project will educate more students.",
+  continuous: "The organization is educating local communities."
+},
+employ: {
+  present: "The company employs many workers.",
+  past: "The company employed ten people last year.",
+  future: "The company will employ more workers.",
+  continuous: "The company is employing new staff."
+},
+empty: {
+  present: "I empty my bag every Friday.",
+  past: "I emptied the box yesterday.",
+  future: "I will empty the cupboard tomorrow.",
+  continuous: "I am emptying the drawer now."
+},
+examine: {
+  present: "Doctors examine patients carefully.",
+  past: "The doctor examined me yesterday.",
+  future: "The teacher will examine our work tomorrow.",
+  continuous: "The doctor is examining the patient."
+},
+exist: {
+  present: "Many kinds of plants exist here.",
+  past: "The old building existed for decades.",
+  future: "The tradition will exist for years.",
+  continuous: "The tradition is continuing today."
+},
+expand: {
+  present: "The business expands every year.",
+  past: "The business expanded last year.",
+  future: "The company will expand next year.",
+  continuous: "The business is expanding quickly."
+},
+feed: {
+  present: "I feed the chickens every morning.",
+  past: "I fed the chickens yesterday.",
+  future: "I will feed them tomorrow.",
+  continuous: "I am feeding the chickens now."
+},
+fetch: {
+  present: "I fetch water every morning.",
+  past: "I fetched water yesterday.",
+  future: "I will fetch water tomorrow.",
+  continuous: "I am fetching water now."
+},
+float: {
+  present: "Wood floats on water.",
+  past: "The boat floated down the river.",
+  future: "The leaf will float on the water.",
+  continuous: "The boat is floating on the lake."
+},
+fold: {
+  present: "I fold my clothes every evening.",
+  past: "I folded the paper yesterday.",
+  future: "I will fold the clothes tomorrow.",
+  continuous: "I am folding the paper now."
+},
+frighten: {
+  present: "Loud noises frighten some children.",
+  past: "The noise frightened me yesterday.",
+  future: "The sudden sound will frighten the cat.",
+  continuous: "The loud noise is frightening the baby."
+},
+greet: {
+  present: "I greet my neighbors every morning.",
+  past: "I greeted my teacher yesterday.",
+  future: "I will greet the visitors tomorrow.",
+  continuous: "I am greeting the guests now."
+},
+grind: {
+  present: "They grind coffee beans every morning.",
+  past: "They ground the grain yesterday.",
+  future: "They will grind the wheat tomorrow.",
+  continuous: "They are grinding coffee beans now."
+},
+guard: {
+  present: "Security guards guard the entrance.",
+  past: "He guarded the building last night.",
+  future: "They will guard the gate tomorrow.",
+  continuous: "The guard is guarding the entrance."
+},
+handle: {
+  present: "I handle difficult tasks carefully.",
+  past: "She handled the problem yesterday.",
+  future: "I will handle the situation tomorrow.",
+  continuous: "He is handling the documents now."
+},
+hang: {
+  present: "I hang my clothes outside.",
+  past: "I hung the picture yesterday.",
+  future: "I will hang the curtains tomorrow.",
+  continuous: "I am hanging the clothes now."
+},
+heat: {
+  present: "I heat water before making tea.",
+  past: "I heated the food yesterday.",
+  future: "I will heat the soup tomorrow.",
+  continuous: "I am heating the water now."
+},
+hunt: {
+  present: "Some animals hunt at night.",
+  past: "The hunters hunted in the forest.",
+  future: "They will hunt for food tomorrow.",
+  continuous: "The eagle is hunting for prey."
+},
+identify: {
+  present: "I identify objects by their shapes.",
+  past: "I identified the problem yesterday.",
+  future: "I will identify the correct answer.",
+  continuous: "I am identifying the names now."
+},
+interrupt: {
+  present: "I avoid interrupting other speakers.",
+  past: "He interrupted the lesson yesterday.",
+  future: "I will not interrupt you tomorrow.",
+  continuous: "She is interrupting the speaker."
+},
+invent: {
+  present: "Engineers invent useful machines.",
+  past: "He invented a simple tool.",
+  future: "They will invent new technology.",
+  continuous: "She is inventing a new device."
+},
+挠: {
+  present: "I scratch the paper lightly.",
+  past: "I scratched my hand yesterday.",
+  future: "I will scratch the label off.",
+  continuous: "The cat is scratching the sofa."
+},
+kneel: {
+  present: "I kneel during the exercise.",
+  past: "I knelt on the floor yesterday.",
+  future: "I will kneel beside the box.",
+  continuous: "I am kneeling on the mat."
+},
+knock: {
+  present: "I knock before entering a room.",
+  past: "I knocked on the door yesterday.",
+  future: "I will knock before entering.",
+  continuous: "I am knocking on the door now."
+},
+leak: {
+  present: "The pipe leaks water.",
+  past: "The roof leaked during the storm.",
+  future: "The container will leak if damaged.",
+  continuous: "The pipe is leaking now."
+},
+lock: {
+  present: "I lock the door every night.",
+  past: "I locked the door yesterday.",
+  future: "I will lock the office later.",
+  continuous: "I am locking the door now."
+},
+manage: {
+  present: "I manage my time carefully.",
+  past: "She managed the shop last year.",
+  future: "I will manage the project tomorrow.",
+  continuous: "He is managing the team now."
+},
+mend: {
+  present: "I mend torn clothes at home.",
+  past: "I mended my shirt yesterday.",
+  future: "I will mend the bag tomorrow.",
+  continuous: "She is mending the dress now."
+},
+mix: {
+  present: "I mix flour and water.",
+  past: "I mixed the ingredients yesterday.",
+  future: "I will mix the colors tomorrow.",
+  continuous: "I am mixing the ingredients now."
+},
+obey: {
+  present: "Students obey school rules.",
+  past: "The students obeyed the rules yesterday.",
+  future: "They will obey the instructions.",
+  continuous: "The children are obeying the teacher."
+},
+owe: {
+  present: "I owe my friend some money.",
+  past: "I owed him money last year.",
+  future: "I will owe the bank money after borrowing.",
+  continuous: "I am still owing him money."
+},
+peel: {
+  present: "I peel oranges before eating them.",
+  past: "I peeled a potato yesterday.",
+  future: "I will peel the fruit tomorrow.",
+  continuous: "I am peeling an orange now."
+},
+perform: {
+  present: "The students perform on stage.",
+  past: "They performed yesterday.",
+  future: "They will perform tomorrow.",
+  continuous: "The band is performing now."
+},
+permit: {
+  present: "The school permits visitors to enter.",
+  past: "They permitted us to leave early.",
+  future: "The manager will permit the change.",
+  continuous: "The system is permitting access."
+},
+pour: {
+  present: "I pour milk into my cup.",
+  past: "I poured water yesterday.",
+  future: "I will pour the juice tomorrow.",
+  continuous: "I am pouring the water now."
+},
+pray: {
+  present: "Some people pray every morning.",
+  past: "They prayed yesterday.",
+  future: "We will pray tomorrow.",
+  continuous: "They are praying now."
+},
+print: {
+  present: "I print my notes before class.",
+  past: "I printed the document yesterday.",
+  future: "I will print the report tomorrow.",
+  continuous: "I am printing the document now."
+},
+produce: {
+  present: "The factory produces school supplies.",
+  past: "The factory produced new products last year.",
+  future: "The factory will produce more goods.",
+  continuous: "The factory is producing new items."
+},
+publish: {
+  present: "The school publishes a newsletter.",
+  past: "They published the article yesterday.",
+  future: "They will publish the results tomorrow.",
+  continuous: "The team is publishing a new report."
+},
+punish: {
+  present: "The school punishes serious rule-breaking.",
+  past: "The teacher punished the student yesterday.",
+  future: "The school will punish repeated misconduct.",
+  continuous: "The committee is reviewing the punishment."
+},
+race: {
+  present: "The athletes race every weekend.",
+  past: "They raced yesterday.",
+  future: "They will race tomorrow.",
+  continuous: "The athletes are racing now."
+},
+recognize: {
+  present: "I recognize familiar faces.",
+  past: "I recognized him yesterday.",
+  future: "I will recognize her when she arrives.",
+  continuous: "I am beginning to recognize the pattern."
+},
+recommend: {
+  present: "Teachers recommend useful books.",
+  past: "She recommended a book yesterday.",
+  future: "I will recommend this course tomorrow.",
+  continuous: "He is recommending a new method."
+},
+refuse: {
+  present: "I refuse to tell lies.",
+  past: "She refused the offer yesterday.",
+  future: "I will refuse if the terms are unfair.",
+  continuous: "He is refusing to answer."
+},
+relax: {
+  present: "I relax after school.",
+  past: "I relaxed at home yesterday.",
+  future: "I will relax this evening.",
+  continuous: "I am relaxing now."
+},
+release: {
+  present: "The company releases new products.",
+  past: "They released the report yesterday.",
+  future: "They will release the results tomorrow.",
+  continuous: "The organization is releasing new information."
+},
+rent: {
+  present: "They rent rooms to visitors.",
+  past: "We rented a house last year.",
+  future: "I will rent a room next month.",
+  continuous: "They are renting an apartment now."
+},
+rescue: {
+  present: "Firefighters rescue people in danger.",
+  past: "They rescued the child yesterday.",
+  future: "The team will rescue the trapped animal.",
+  continuous: "The firefighters are rescuing the passengers."
+},
+retire: {
+  present: "Some workers retire at the end of their careers.",
+  past: "He retired last year.",
+  future: "She will retire next year.",
+  continuous: "He is preparing to retire."
+},
+rub: {
+  present: "I rub my hands when they are cold.",
+  past: "I rubbed the table yesterday.",
+  future: "I will rub the stain gently.",
+  continuous: "I am rubbing the surface now."
+},
+sail: {
+  present: "They sail across the lake.",
+  past: "They sailed yesterday.",
+  future: "They will sail tomorrow.",
+  continuous: "The boat is sailing across the lake."
+},
+search: {
+  present: "I search for information online.",
+  past: "I searched for the file yesterday.",
+  future: "I will search again tomorrow.",
+  continuous: "I am searching for the answer now."
+},
+separate: {
+  present: "I separate paper from plastic.",
+  past: "I separated the papers yesterday.",
+  future: "I will separate the groups tomorrow.",
+  continuous: "I am separating the documents now."
+},
+settle: {
+  present: "They settle disagreements peacefully.",
+  past: "They settled the dispute yesterday.",
+  future: "We will settle the matter tomorrow.",
+  continuous: "They are settling into their new home."
+},
+shake: {
+  present: "I shake the bottle before using it.",
+  past: "I shook the bottle yesterday.",
+  future: "I will shake the container carefully.",
+  continuous: "I am shaking the bottle now."
+},
+shine: {
+  present: "The sun shines brightly.",
+  past: "The sun shone yesterday.",
+  future: "The sun will shine tomorrow.",
+  continuous: "The sun is shining now."
+},
+shoot: {
+  present: "The photographer shoots pictures outdoors.",
+  past: "She shot a video yesterday.",
+  future: "I will shoot a video tomorrow.",
+  continuous: "He is shooting a film now."
+},
+sow: {
+  present: "Farmers sow seeds in the rainy season.",
+  past: "They sowed seeds yesterday.",
+  future: "We will sow seeds tomorrow.",
+  continuous: "The farmer is sowing seeds now."
+},
+spill: {
+  present: "I sometimes spill water accidentally.",
+  past: "I spilled the juice yesterday.",
+  future: "I will be careful not to spill it.",
+  continuous: "The cup is spilling water."
+},
+spoil: {
+  present: "Heat spoils food quickly.",
+  past: "The food spoiled yesterday.",
+  future: "The milk will spoil without refrigeration.",
+  continuous: "The hot weather is spoiling the fruit."
+},
+spread: {
+  present: "I spread butter on bread.",
+  past: "I spread the news yesterday.",
+  future: "I will spread the cloth on the table.",
+  continuous: "I am spreading the seeds now."
+},
+stretch: {
+  present: "I stretch before exercise.",
+  past: "I stretched yesterday.",
+  future: "I will stretch after the run.",
+  continuous: "I am stretching my arms now."
+},
+succeed: {
+  present: "I succeed when I work hard.",
+  past: "She succeeded in the exam.",
+  future: "They will succeed with practice.",
+  continuous: "The plan is succeeding so far."
+},
+suffer: {
+  present: "Some plants suffer during droughts.",
+  past: "The crops suffered last season.",
+  future: "The plants will suffer without water.",
+  continuous: "The crops are suffering from the drought."
+},
+supply: {
+  present: "The shop supplies school materials.",
+  past: "The shop supplied books last year.",
+  future: "They will supply more materials tomorrow.",
+  continuous: "The company is supplying new equipment."
+},
+support: {
+  present: "I support my classmates.",
+  past: "I supported the team yesterday.",
+  future: "I will support your project.",
+  continuous: "We are supporting the school event."
+},
+suppose: {
+  present: "I suppose the answer is correct.",
+  past: "I supposed he was at home.",
+  future: "I will suppose nothing without evidence.",
+  continuous: "I am supposing that the figures are correct."
+},
+surprise: {
+  present: "Gifts surprise children.",
+  past: "The news surprised me yesterday.",
+  future: "The party will surprise her.",
+  continuous: "The result is surprising everyone."
+},
+survive: {
+  present: "Some plants survive in dry conditions.",
+  past: "The plant survived the drought.",
+  future: "The species will survive if protected.",
+  continuous: "The seedlings are surviving in the heat."
+},
+taste: {
+  present: "I taste the soup before serving it.",
+  past: "I tasted the sauce yesterday.",
+  future: "I will taste the dish later.",
+  continuous: "I am tasting the soup now."
+},
+thank: {
+  present: "I thank people for their help.",
+  past: "I thanked my teacher yesterday.",
+  future: "I will thank her tomorrow.",
+  continuous: "I am thanking everyone for coming."
+},
+tie: {
+  present: "I tie my shoes every morning.",
+  past: "I tied the package yesterday.",
+  future: "I will tie the ribbon tomorrow.",
+  continuous: "I am tying my shoes now."
+},
+train: {
+  present: "I train for the competition every week.",
+  past: "I trained yesterday.",
+  future: "I will train tomorrow.",
+  continuous: "I am training for the race now."
+},
+translate: {
+  present: "I translate short texts into English.",
+  past: "I translated the letter yesterday.",
+  future: "I will translate the document tomorrow.",
+  continuous: "I am translating the paragraph now."
+},
+treat: {
+  present: "Doctors treat patients carefully.",
+  past: "The doctor treated the patient yesterday.",
+  future: "The clinic will treat more patients tomorrow.",
+  continuous: "The doctor is treating a patient now."
+},
+unlock: {
+  present: "I unlock my phone every morning.",
+  past: "I unlocked the door yesterday.",
+  future: "I will unlock the office tomorrow.",
+  continuous: "I am unlocking the door now."
+},
+upload: {
+  present: "I upload assignments online.",
+  past: "I uploaded my homework yesterday.",
+  future: "I will upload the file tomorrow.",
+  continuous: "I am uploading a document now."
+},
+whisper: {
+  present: "I whisper in the library.",
+  past: "She whispered a secret yesterday.",
+  future: "I will whisper the answer to you.",
+  continuous: "They are whispering quietly."
+},
+weigh: {
+  present: "I weigh the ingredients before cooking.",
+  past: "I weighed the package yesterday.",
+  future: "I will weigh the parcel tomorrow.",
+  continuous: "I am weighing the ingredients now."
+},
+  };
+
+  if (!word) {
+    output.textContent = "Please enter a verb first.";
+    return;
+  }
+
+  const ex = examples[word];
+
+  if (!ex) {
+    output.textContent =
+      "Examples are not available for this verb yet.";
+    return;
+  }
+
+  output.innerHTML = `
+    <h3>Examples of ${word}</h3>
+    <p><b>Present:</b> ${ex.present}</p>
+    <p><b>Past:</b> ${ex.past}</p>
+    <p><b>Future:</b> ${ex.future}</p>
+    <p><b>Continuous:</b> ${ex.continuous}</p>
+  `;
+}
+
+/* NAV */
+function openPage(p){
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+document.getElementById(p).classList.add('active');
+}
+
+/* GREETING */
+let h=new Date().getHours();
+document.getElementById("greet").innerText =
+h<12?"🌿 Good Morning":h<18?"🌤 Good Afternoon":"🌙 Good Evening";
+
+/* ENGLISH (FULL VERB SYSTEM YOU PROVIDED) */
+const verbs={
+  cook:{present:"cook",past:"cooked",future:"will cook",continuous:"cooking",rw:"guteka"},
+read:{present:"read",past:"read",future:"will read",continuous:"reading",rw:"gusoma"},
+write:{present:"write",past:"wrote",future:"will write",continuous:"writing",rw:"kwandika"},
+teach:{present:"teach",past:"taught",future:"will teach",continuous:"teaching",rw:"kwigisha"},
+play:{present:"play",past:"played",future:"will play",continuous:"playing",rw:"gukina"},
+sleep:{present:"sleep",past:"slept",future:"will sleep",continuous:"sleeping",rw:"gusinzira"},
+clean:{present:"clean",past:"cleaned",future:"will clean",continuous:"cleaning",rw:"gusukura"},
+drive:{present:"drive",past:"drove",future:"will drive",continuous:"driving",rw:"gutwara"},
+swim:{present:"swim",past:"swam",future:"will swim",continuous:"swimming",rw:"koga"},
+sing:{present:"sing",past:"sang",future:"will sing",continuous:"singing",rw:"kuririmba"},
+dance:{present:"dance",past:"danced",future:"will dance",continuous:"dancing",rw:"kubyina"},
+draw:{present:"draw",past:"drew",future:"will draw",continuous:"drawing",rw:"gushushanya"},
+paint:{present:"paint",past:"painted",future:"will paint",continuous:"painting",rw:"gusiga irangi"},
+listen:{present:"listen",past:"listened",future:"will listen",continuous:"listening",rw:"gutega amatwi"},
+hear:{present:"hear",past:"heard",future:"will hear",continuous:"hearing",rw:"kumva"},
+watch:{present:"watch",past:"watched",future:"will watch",continuous:"watching",rw:"kureba"},
+look:{present:"look",past:"looked",future:"will look",continuous:"looking",rw:"kureba"},
+ask:{present:"ask",past:"asked",future:"will ask",continuous:"asking",rw:"kubaza"},
+answer:{present:"answer",past:"answered",future:"will answer",continuous:"answering",rw:"gusubiza"},
+talk:{present:"talk",past:"talked",future:"will talk",continuous:"talking",rw:"kuganira"},
+tell:{present:"tell",past:"told",future:"will tell",continuous:"telling",rw:"kubwira"},
+say:{present:"say",past:"said",future:"will say",continuous:"saying",rw:"kuvuga"},
+help:{present:"help",past:"helped",future:"will help",continuous:"helping",rw:"gufasha"},
+open:{present:"open",past:"opened",future:"will open",continuous:"opening",rw:"gufungura"},
+close:{present:"close",past:"closed",future:"will close",continuous:"closing",rw:"gufunga"},
+start:{present:"start",past:"started",future:"will start",continuous:"starting",rw:"gutangira"},
+finish:{present:"finish",past:"finished",future:"will finish",continuous:"finishing",rw:"kurangiza"},
+wash:{present:"wash",past:"washed",future:"will wash",continuous:"washing",rw:"gukaraba"},
+visit:{present:"visit",past:"visited",future:"will visit",continuous:"visiting",rw:"gusura"},
+travel:{present:"travel",past:"traveled",future:"will travel",continuous:"traveling",rw:"gutembera"},
+arrive:{present:"arrive",past:"arrived",future:"will arrive",continuous:"arriving",rw:"kuhagera"},
+leave:{present:"leave",past:"left",future:"will leave",continuous:"leaving",rw:"kuva"},
+meet:{present:"meet",past:"met",future:"will meet",continuous:"meeting",rw:"guhura"},
+love:{present:"love",past:"loved",future:"will love",continuous:"loving",rw:"gukunda"},
+like:{present:"like",past:"liked",future:"will like",continuous:"liking",rw:"gukunda"},
+want:{present:"want",past:"wanted",future:"will want",continuous:"wanting",rw:"gushaka"},
+need:{present:"need",past:"needed",future:"will need",continuous:"needing",rw:"gukenera"},
+know:{present:"know",past:"knew",future:"will know",continuous:"knowing",rw:"kumenya"},
+understand:{present:"understand",past:"understood",future:"will understand",continuous:"understanding",rw:"gusobanukirwa"},
+remember:{present:"remember",past:"remembered",future:"will remember",continuous:"remembering",rw:"kwibuka"},
+forget:{present:"forget",past:"forgot",future:"will forget",continuous:"forgetting",rw:"kwibagirwa"},
+choose:{present:"choose",past:"chose",future:"will choose",continuous:"choosing",rw:"guhitamo"},
+bring:{present:"bring",past:"brought",future:"will bring",continuous:"bringing",rw:"kuzana"},
+carry:{present:"carry",past:"carried",future:"will carry",continuous:"carrying",rw:"gutwara"},
+hold:{present:"hold",past:"held",future:"will hold",continuous:"holding",rw:"gufata"},
+keep:{present:"keep",past:"kept",future:"will keep",continuous:"keeping",rw:"kubika"},
+find:{present:"find",past:"found",future:"will find",continuous:"finding",rw:"kubona"},
+lose:{present:"lose",past:"lost",future:"will lose",continuous:"losing",rw:"gutakaza"},
+win:{present:"win",past:"won",future:"will win",continuous:"winning",rw:"gutsinda"},
+break:{present:"break",past:"broke",future:"will break",continuous:"breaking",rw:"kumena"},
+build:{present:"build",past:"built",future:"will build",continuous:"building",rw:"kubaka"},
+cut:{present:"cut",past:"cut",future:"will cut",continuous:"cutting",rw:"gukata"},
+grow:{present:"grow",past:"grew",future:"will grow",continuous:"growing",rw:"gukura"},
+fall:{present:"fall",past:"fell",future:"will fall",continuous:"falling",rw:"kugwa"},
+fly:{present:"fly",past:"flew",future:"will fly",continuous:"flying",rw:"kuguruka"},
+laugh:{present:"laugh",past:"laughed",future:"will laugh",continuous:"laughing",rw:"guseka"},
+cry:{present:"cry",past:"cried",future:"will cry",continuous:"crying",rw:"kurira"},
+smile:{present:"smile",past:"smiled",future:"will smile",continuous:"smiling",rw:"kumwenyura"},
+pray:{present:"pray",past:"prayed",future:"will pray",continuous:"praying",rw:"gusenga"},
+pay:{present:"pay",past:"paid",future:"will pay",continuous:"paying",rw:"kwishyura"},
+save:{present:"save",past:"saved",future:"will save",continuous:"saving",rw:"kuzigama"},
+count:{present:"count",past:"counted",future:"will count",continuous:"counting",rw:"kubara"},
+explain:{present:"explain",past:"explained",future:"will explain",continuous:"explaining",rw:"gusobanura"},
+repair:{present:"repair",past:"repaired",future:"will repair",continuous:"repairing",rw:"gusana"},
+plant:{present:"plant",past:"planted",future:"will plant",continuous:"planting",rw:"gutera"},
+feed:{present:"feed",past:"fed",future:"will feed",continuous:"feeding",rw:"kugaburira"},
+throw:{present:"throw",past:"threw",future:"will throw",continuous:"throwing",rw:"gutera"},
+catch:{present:"catch",past:"caught",future:"will catch",continuous:"catching",rw:"gufata"},
+search:{present:"search",past:"searched",future:"will search",continuous:"searching",rw:"gushakisha"},
+create:{present:"create",past:"created",future:"will create",continuous:"creating",rw:"guhanga"},
+design:{present:"design",past:"designed",future:"will design",continuous:"designing",rw:"gushushanya"},
+print:{present:"print",past:"printed",future:"will print",continuous:"printing",rw:"gusohora ku rupapuro"},
+download:{present:"download",past:"downloaded",future:"will download",continuous:"downloading",rw:"kuvanaho kuri interineti"},
+upload:{present:"upload",past:"uploaded",future:"will upload",continuous:"uploading",rw:"kohereza kuri interineti"},
+type:{present:"type",past:"typed",future:"will type",continuous:"typing",rw:"kwandika kuri mudasobwa"},
+connect:{present:"connect",past:"connected",future:"will connect",continuous:"connecting",rw:"guhuza"},
+install:{present:"install",past:"installed",future:"will install",continuous:"installing",rw:"gushyiramo porogaramu"},
+go:{present:"go",past:"went",future:"will go",continuous:"going",rw:"genda"},
+come:{present:"come",past:"came",future:"will come",continuous:"coming",rw:"kuza"},
+see:{present:"see",past:"saw",future:"will see",continuous:"seeing",rw:"kubona"},
+take:{present:"take",past:"took",future:"will take",continuous:"taking",rw:"gufata"},
+make:{present:"make",past:"made",future:"will make",continuous:"making",rw:"gukora"},
+do:{present:"do",past:"did",future:"will do",continuous:"doing",rw:"gukora"},
+get:{present:"get",past:"got",future:"will get",continuous:"getting",rw:"kubona"},
+have:{present:"have",past:"had",future:"will have",continuous:"having",rw:"kugira"},
+give:{present:"give",past:"gave",future:"will give",continuous:"giving",rw:"gutanga"},
+put:{present:"put",past:"put",future:"will put",continuous:"putting",rw:"gushyira"},
+send:{present:"send",past:"sent",future:"will send",continuous:"sending",rw:"kohereza"},
+buy:{present:"buy",past:"bought",future:"will buy",continuous:"buying",rw:"kugura"},
+sell:{present:"sell",past:"sold",future:"will sell",continuous:"selling",rw:"kugurisha"},
+work:{present:"work",past:"worked",future:"will work",continuous:"working",rw:"gukora"},
+study:{present:"study",past:"studied",future:"will study",continuous:"studying",rw:"kwiga"},
+learn:{present:"learn",past:"learned",future:"will learn",continuous:"learning",rw:"kwiga"},
+speak:{present:"speak",past:"spoke",future:"will speak",continuous:"speaking",rw:"kuvuga"},
+think:{present:"think",past:"thought",future:"will think",continuous:"thinking",rw:"gutekereza"},
+eat:{present:"eat",past:"ate",future:"will eat",continuous:"eating",rw:"kurya"},
+drink:{present:"drink",past:"drank",future:"will drink",continuous:"drinking",rw:"kunywa"},
+run:{present:"run",past:"ran",future:"will run",continuous:"running",rw:"kwiruka"},
+walk:{present:"walk",past:"walked",future:"will walk",continuous:"walking",rw:"kugenda"},
+  abandon:{present:"abandon",past:"abandoned",future:"will abandon",continuous:"abandoning",rw:"gutererana"},
+  abolish:{present:"abolish",past:"abolished",future:"will abolish",continuous:"abolishing",rw:"kuvanaho"},
+  absorb:{present:"absorb",past:"absorbed",future:"will absorb",continuous:"absorbing",rw:"kwinjiza"},
+  accelerate:{present:"accelerate",past:"accelerated",future:"will accelerate",continuous:"accelerating",rw:"kwihutisha"},
+  accompany:{present:"accompany",past:"accompanied",future:"will accompany",continuous:"accompanying",rw:"guherekeza"},
+  accuse:{present:"accuse",past:"accused",future:"will accuse",continuous:"accusing",rw:"gushinja"},
+  acknowledge:{present:"acknowledge",past:"acknowledged",future:"will acknowledge",continuous:"acknowledging",rw:"kwemera ko ari ukuri"},
+  acquire:{present:"acquire",past:"acquired",future:"will acquire",continuous:"acquiring",rw:"kwiyungura"},
+  activate:{present:"activate",past:"activated",future:"will activate",continuous:"activating",rw:"gukoresha"},
+  address:{present:"address",past:"addressed",future:"will address",continuous:"addressing",rw:"kuvugira"},
+  adjust:{present:"adjust",past:"adjusted",future:"will adjust",continuous:"adjusting",rw:"guhindura"},
+  administer:{present:"administer",past:"administered",future:"will administer",continuous:"administering",rw:"gucunga"},
+  advance:{present:"advance",past:"advanced",future:"will advance",continuous:"advancing",rw:"gutera imbere"},
+  advertise:{present:"advertise",past:"advertised",future:"will advertise",continuous:"advertising",rw:"kwamamaza"},
+  advocate:{present:"advocate",past:"advocated",future:"will advocate",continuous:"advocating",rw:"gushyigikira igitekerezo"},
+  allocate:{present:"allocate",past:"allocated",future:"will allocate",continuous:"allocating",rw:"kugenera"},
+  amend:{present:"amend",past:"amended",future:"will amend",continuous:"amending",rw:"gukosora"},
+  analyze:{present:"analyze",past:"analyzed",future:"will analyze",continuous:"analyzing",rw:"gusesengura"},
+  anticipate:{present:"anticipate",past:"anticipated",future:"will anticipate",continuous:"anticipating",rw:"kwitega"},
+  appoint:{present:"appoint",past:"appointed",future:"will appoint",continuous:"appointing",rw:"gushyiraho"},
+  approve:{present:"approve",past:"approved",future:"will approve",continuous:"approving",rw:"kwemeza"},
+  assess:{present:"assess",past:"assessed",future:"will assess",continuous:"assessing",rw:"gusuzuma"},
+  assign:{present:"assign",past:"assigned",future:"will assign",continuous:"assigning",rw:"kugenera inshingano"},
+  assure:{present:"assure",past:"assured",future:"will assure",continuous:"assuring",rw:"kwizeza"},
+  astonish:{present:"astonish",past:"astonished",future:"will astonish",continuous:"astonishing",rw:"gutangaza"},
+  authorize:{present:"authorize",past:"authorized",future:"will authorize",continuous:"authorizing",rw:"gutanga uburenganzira"},
+  awaken:{present:"awaken",past:"awoke",future:"will awaken",continuous:"awakening",rw:"gukanguka"},
+  beckon:{present:"beckon",past:"beckoned",future:"will beckon",continuous:"beckoning",rw:"guhamagara ukoresheje ikimenyetso"},
+  betray:{present:"betray",past:"betrayed",future:"will betray",continuous:"betraying",rw:"kugambanira"},
+  bewilder:{present:"bewilder",past:"bewildered",future:"will bewilder",continuous:"bewildering",rw:"gutesha umuntu umutwe"},
+  bind:{present:"bind",past:"bound",future:"will bind",continuous:"binding",rw:"guhambira"},
+  blossom:{present:"blossom",past:"blossomed",future:"will blossom",continuous:"blossoming",rw:"kurabya"},
+  blur:{present:"blur",past:"blurred",future:"will blur",continuous:"blurring",rw:"gutuma hatagaragara neza"},
+  boost:{present:"boost",past:"boosted",future:"will boost",continuous:"boosting",rw:"kongera imbaraga"},
+  boycott:{present:"boycott",past:"boycotted",future:"will boycott",continuous:"boycotting",rw:"kwanga gufatanya"},
+  browse:{present:"browse",past:"browsed",future:"will browse",continuous:"browsing",rw:"gushakisha kuri interineti"},
+  calculate:{present:"calculate",past:"calculated",future:"will calculate",continuous:"calculating",rw:"kubara"},
+  campaign:{present:"campaign",past:"campaigned",future:"will campaign",continuous:"campaigning",rw:"gukora ubukangurambaga"},
+  certify:{present:"certify",past:"certified",future:"will certify",continuous:"certifying",rw:"kwemeza ku mugaragaro"},
+  clarify:{present:"clarify",past:"clarified",future:"will clarify",continuous:"clarifying",rw:"gusobanura neza"},
+  coincide:{present:"coincide",past:"coincided",future:"will coincide",continuous:"coinciding",rw:"guhurirana"},
+  collaborate:{present:"collaborate",past:"collaborated",future:"will collaborate",continuous:"collaborating",rw:"gukorana"},
+  commence:{present:"commence",past:"commenced",future:"will commence",continuous:"commencing",rw:"gutangira"},
+  compensate:{present:"compensate",past:"compensated",future:"will compensate",continuous:"compensating",rw:"kwishyura indishyi"},
+  compile:{present:"compile",past:"compiled",future:"will compile",continuous:"compiling",rw:"gukusanya amakuru"},
+  complement:{present:"complement",past:"complemented",future:"will complement",continuous:"complementing",rw:"kuzuza"},
+  comply:{present:"comply",past:"complied",future:"will comply",continuous:"complying",rw:"kubahiriza"},
+  comprehend:{present:"comprehend",past:"comprehended",future:"will comprehend",continuous:"comprehending",rw:"gusobanukirwa"},
+  comprise:{present:"comprise",past:"comprised",future:"will comprise",continuous:"comprising",rw:"kugizwe na"},
+  compute:{present:"compute",past:"computed",future:"will compute",continuous:"computing",rw:"kubara"},
+  conceal:{present:"conceal",past:"concealed",future:"will conceal",continuous:"concealing",rw:"guhisha"},
+  conceive:{present:"conceive",past:"conceived",future:"will conceive",continuous:"conceiving",rw:"gutekereza igitekerezo"},
+  condemn:{present:"condemn",past:"condemned",future:"will condemn",continuous:"condemning",rw:"gucira urubanza"},
+  conduct:{present:"conduct",past:"conducted",future:"will conduct",continuous:"conducting",rw:"kuyobora"},
+  confer:{present:"confer",past:"conferred",future:"will confer",continuous:"conferring",rw:"kugisha inama"},
+  configure:{present:"configure",past:"configured",future:"will configure",continuous:"configuring",rw:"gushyiraho imiterere ya porogaramu"},
+  confront:{present:"confront",past:"confronted",future:"will confront",continuous:"confronting",rw:"guhangana na"},
+  conserve:{present:"conserve",past:"conserved",future:"will conserve",continuous:"conserving",rw:"kubungabunga"},
+  constitute:{present:"constitute",past:"constituted",future:"will constitute",continuous:"constituting",rw:"kugize"},
+  constrain:{present:"constrain",past:"constrained",future:"will constrain",continuous:"constraining",rw:"kubuza gukora uko ushaka"},
+  construct:{present:"construct",past:"constructed",future:"will construct",continuous:"constructing",rw:"kubaka"},
+  contemplate:{present:"contemplate",past:"contemplated",future:"will contemplate",continuous:"contemplating",rw:"gutekerezaho cyane"},
+  contradict:{present:"contradict",past:"contradicted",future:"will contradict",continuous:"contradicting",rw:"kuvuguruza"},
+  coordinate:{present:"coordinate",past:"coordinated",future:"will coordinate",continuous:"coordinating",rw:"guhuza ibikorwa"},
+  correspond:{present:"correspond",past:"corresponded",future:"will correspond",continuous:"corresponding",rw:"guhura n'ibyo"},
+  cultivate:{present:"cultivate",past:"cultivated",future:"will cultivate",continuous:"cultivating",rw:"guhinga"},
+  deceive:{present:"deceive",past:"deceived",future:"will deceive",continuous:"deceiving",rw:"kubeshya"},
+  dedicate:{present:"dedicate",past:"dedicated",future:"will dedicate",continuous:"dedicating",rw:"kwegurira"},
+  deduct:{present:"deduct",past:"deducted",future:"will deduct",continuous:"deducting",rw:"gukuramo"},
+  define:{present:"define",past:"defined",future:"will define",continuous:"defining",rw:"gusobanura"},
+  delegate:{present:"delegate",past:"delegated",future:"will delegate",continuous:"delegating",rw:"guha undi inshingano"},
+  demonstrate:{present:"demonstrate",past:"demonstrated",future:"will demonstrate",continuous:"demonstrating",rw:"kwerekana"},
+  depart:{present:"depart",past:"departed",future:"will depart",continuous:"departing",rw:"guhaguruka"},
+  depict:{present:"depict",past:"depicted",future:"will depict",continuous:"depicting",rw:"gushushanya"},
+  derive:{present:"derive",past:"derived",future:"will derive",continuous:"deriving",rw:"gukomora"},
+  designate:{present:"designate",past:"designated",future:"will designate",continuous:"designating",rw:"kugena"},
+  deteriorate:{present:"deteriorate",past:"deteriorated",future:"will deteriorate",continuous:"deteriorating",rw:"kwangirika"},
+  devise:{present:"devise",past:"devised",future:"will devise",continuous:"devising",rw:"guhanga uburyo"},
+  diagnose:{present:"diagnose",past:"diagnosed",future:"will diagnose",continuous:"diagnosing",rw:"gusuzuma indwara"},
+  dictate:{present:"dictate",past:"dictated",future:"will dictate",continuous:"dictating",rw:"kuvuga ngo bandike"},
+  diminish:{present:"diminish",past:"diminished",future:"will diminish",continuous:"diminishing",rw:"kugabanuka"},
+  discard:{present:"discard",past:"discarded",future:"will discard",continuous:"discarding",rw:"guta ikidakenewe"},
+  disclose:{present:"disclose",past:"disclosed",future:"will disclose",continuous:"disclosing",rw:"guhishura"},
+  discourage:{present:"discourage",past:"discouraged",future:"will discourage",continuous:"discouraging",rw:"guvuna intege"},
+  discriminate:{present:"discriminate",past:"discriminated",future:"will discriminate",continuous:"discriminating",rw:"guheza abandi"},
+  distinguish:{present:"distinguish",past:"distinguished",future:"will distinguish",continuous:"distinguishing",rw:"gutandukanya"},
+  distribute:{present:"distribute",past:"distributed",future:"will distribute",continuous:"distributing",rw:"gukwirakwiza"},
+  divert:{present:"divert",past:"diverted",future:"will divert",continuous:"diverting",rw:"guhindura icyerekezo"},
+  dominate:{present:"dominate",past:"dominated",future:"will dominate",continuous:"dominating",rw:"gutegeka"},
+  eliminate:{present:"eliminate",past:"eliminated",future:"will eliminate",continuous:"eliminating",rw:"kuvanaho"},
+  embrace:{present:"embrace",past:"embraced",future:"will embrace",continuous:"embracing",rw:"kwakira igitekerezo"},
+  enforce:{present:"enforce",past:"enforced",future:"will enforce",continuous:"enforcing",rw:"gushyira mu bikorwa amategeko"},
+  enhance:{present:"enhance",past:"enhanced",future:"will enhance",continuous:"enhancing",rw:"kunonosora"},
+  enrich:{present:"enrich",past:"enriched",future:"will enrich",continuous:"enriching",rw:"gutungisha"},
+  ensure:{present:"ensure",past:"ensured",future:"will ensure",continuous:"ensuring",rw:"kwemeza ko bibaye"},
+  evaluate:{present:"evaluate",past:"evaluated",future:"will evaluate",continuous:"evaluating",rw:"gusuzuma"},
+  exceed:{present:"exceed",past:"exceeded",future:"will exceed",continuous:"exceeding",rw:"kurenga"},
+  exclude:{present:"exclude",past:"excluded",future:"will exclude",continuous:"excluding",rw:"kuvanamo"},
+  execute:{present:"execute",past:"executed",future:"will execute",continuous:"executing",rw:"gushyira mu bikorwa"},
+  exploit:{present:"exploit",past:"exploited",future:"will exploit",continuous:"exploiting",rw:"gukoresha icyo ufite"},
+  facilitate:{present:"facilitate",past:"facilitated",future:"will facilitate",continuous:"facilitating",rw:"koroshya"},
+  formulate:{present:"formulate",past:"formulated",future:"will formulate",continuous:"formulating",rw:"gutegura igitekerezo"},
+  foster:{present:"foster",past:"fostered",future:"will foster",continuous:"fostering",rw:"guteza imbere"},
+  fulfill:{present:"fulfill",past:"fulfilled",future:"will fulfill",continuous:"fulfilling",rw:"kuzuza inshingano"},
+  fund:{present:"fund",past:"funded",future:"will fund",continuous:"funding",rw:"gutera inkunga"},
+  grasp:{present:"grasp",past:"grasped",future:"will grasp",continuous:"grasping",rw:"gusobanukirwa"},
+  hinder:{present:"hinder",past:"hindered",future:"will hinder",continuous:"hindering",rw:"kubangamira"},
+  implement:{present:"implement",past:"implemented",future:"will implement",continuous:"implementing",rw:"gushyira mu bikorwa"},
+  imply:{present:"imply",past:"implied",future:"will imply",continuous:"implying",rw:"kumvikanisha"},
+  incorporate:{present:"incorporate",past:"incorporated",future:"will incorporate",continuous:"incorporating",rw:"gushyiramo"},
+  indicate:{present:"indicate",past:"indicated",future:"will indicate",continuous:"indicating",rw:"kwerekana"},
+  induce:{present:"induce",past:"induced",future:"will induce",continuous:"inducing",rw:"gutera"},
+  initiate:{present:"initiate",past:"initiated",future:"will initiate",continuous:"initiating",rw:"gutangiza"},
+  innovate:{present:"innovate",past:"innovated",future:"will innovate",continuous:"innovating",rw:"guhanga udushya"},
+  insert:{present:"insert",past:"inserted",future:"will insert",continuous:"inserting",rw:"kwinjizamo"},
+  integrate:{present:"integrate",past:"integrated",future:"will integrate",continuous:"integrating",rw:"guhuza"},
+  justify:{present:"justify",past:"justified",future:"will justify",continuous:"justifying",rw:"gutanga impamvu"},
+  legislate:{present:"legislate",past:"legislated",future:"will legislate",continuous:"legislating",rw:"gushyiraho amategeko"},
+  manufacture:{present:"manufacture",past:"manufactured",future:"will manufacture",continuous:"manufacturing",rw:"gukora ibicuruzwa"},
+  mediate:{present:"mediate",past:"mediated",future:"will mediate",continuous:"mediating",rw:"kubunga"},
+  migrate:{present:"migrate",past:"migrated",future:"will migrate",continuous:"migrating",rw:"kwimuka"},
+  minimize:{present:"minimize",past:"minimized",future:"will minimize",continuous:"minimizing",rw:"kugabanya"},
+  modify:{present:"modify",past:"modified",future:"will modify",continuous:"modifying",rw:"guhindura"},
+  monitor:{present:"monitor",past:"monitored",future:"will monitor",continuous:"monitoring",rw:"gukurikirana"},
+  neglect:{present:"neglect",past:"neglected",future:"will neglect",continuous:"neglecting",rw:"kwirengagiza"},
+  notify:{present:"notify",past:"notified",future:"will notify",continuous:"notifying",rw:"kumenyesha"},
+  nurture:{present:"nurture",past:"nurtured",future:"will nurture",continuous:"nurturing",rw:"kurera no kwita kuri"},
+  overcome:{present:"overcome",past:"overcame",future:"will overcome",continuous:"overcoming",rw:"gutsinda inzitizi"},
+  oversee:{present:"oversee",past:"oversaw",future:"will oversee",continuous:"overseeing",rw:"kugenzura"},
+  perceive:{present:"perceive",past:"perceived",future:"will perceive",continuous:"perceiving",rw:"gutahura"},
+  persist:{present:"persist",past:"persisted",future:"will persist",continuous:"persisting",rw:"gukomeza utacika intege"},
+  plead:{present:"plead",past:"pleaded",future:"will plead",continuous:"pleading",rw:"kwinginga"},
+  portray:{present:"portray",past:"portrayed",future:"will portray",continuous:"portraying",rw:"kugaragaza"},
+  prevail:{present:"prevail",past:"prevailed",future:"will prevail",continuous:"prevailing",rw:"kunesha"},
+  prioritize:{present:"prioritize",past:"prioritized",future:"will prioritize",continuous:"prioritizing",rw:"gushyira imbere"},
+  proclaim:{present:"proclaim",past:"proclaimed",future:"will proclaim",continuous:"proclaiming",rw:"gutangaza ku mugaragaro"},
+  prompt:{present:"prompt",past:"prompted",future:"will prompt",continuous:"prompting",rw:"gutera umuntu gukora"},
+  pursue:{present:"pursue",past:"pursued",future:"will pursue",continuous:"pursuing",rw:"gukurikirana intego"},
+  reinforce:{present:"reinforce",past:"reinforced",future:"will reinforce",continuous:"reinforcing",rw:"gukomeza"},
+  render:{present:"render",past:"rendered",future:"will render",continuous:"rendering",rw:"gutanga serivisi"},
+  renovate:{present:"renovate",past:"renovated",future:"will renovate",continuous:"renovating",rw:"gusana inyubako"},
+  reconcile:{present:"reconcile",past:"reconciled",future:"will reconcile",continuous:"reconciling",rw:"kwiyunga"},
+  regulate:{present:"regulate",past:"regulated",future:"will regulate",continuous:"regulating",rw:"kugenzura"},
+  retrieve:{present:"retrieve",past:"retrieved",future:"will retrieve",continuous:"retrieving",rw:"kugarura"},
+  revise:{present:"revise",past:"revised",future:"will revise",continuous:"revising",rw:"gusubiramo no gukosora"},
+  rotate:{present:"rotate",past:"rotated",future:"will rotate",continuous:"rotating",rw:"kuzenguruka"},
+  secure:{present:"secure",past:"secured",future:"will secure",continuous:"securing",rw:"kurinda"},
+  simulate:{present:"simulate",past:"simulated",future:"will simulate",continuous:"simulating",rw:"kwigana uko ikintu kiba"},
+  specify:{present:"specify",past:"specified",future:"will specify",continuous:"specifying",rw:"gusobanura neza"},
+  stabilize:{present:"stabilize",past:"stabilized",future:"will stabilize",continuous:"stabilizing",rw:"gutuza"},
+  summarize:{present:"summarize",past:"summarized",future:"will summarize",continuous:"summarizing",rw:"gukora incamake"},
+  supplement:{present:"supplement",past:"supplemented",future:"will supplement",continuous:"supplementing",rw:"kongeraho"},
+  synchronize:{present:"synchronize",past:"synchronized",future:"will synchronize",continuous:"synchronizing",rw:"guhuza ibihe"},
+  terminate:{present:"terminate",past:"terminated",future:"will terminate",continuous:"terminating",rw:"guhagarika burundu"},
+  tolerate:{present:"tolerate",past:"tolerated",future:"will tolerate",continuous:"tolerating",rw:"kwihanganira"},
+  transmit:{present:"transmit",past:"transmitted",future:"will transmit",continuous:"transmitting",rw:"kohereza amakuru"},
+  trigger:{present:"trigger",past:"triggered",future:"will trigger",continuous:"triggering",rw:"gutuma ikintu gitangira"},
+  undergo:{present:"undergo",past:"underwent",future:"will undergo",continuous:"undergoing",rw:"kunyura mu kintu"},
+  utilize:{present:"utilize",past:"utilized",future:"will utilize",continuous:"utilizing",rw:"gukoresha"},
+  validate:{present:"validate",past:"validated",future:"will validate",continuous:"validating",rw:"kwemeza ko ari ukuri"},
+  visualize:{present:"visualize",past:"visualized",future:"will visualize",continuous:"visualizing",rw:"kwiyumvisha mu bitekerezo"},
+  withstand:{present:"withstand",past:"withstood",future:"will withstand",continuous:"withstanding",rw:"kwihanganira"},
+ bake:{present:"bake",past:"baked",future:"will bake",continuous:"baking",rw:"guteka mu ifuru"},
+boil:{present:"boil",past:"boiled",future:"will boil",continuous:"boiling",rw:"kuroha"},
+fry:{present:"fry",past:"fried",future:"will fry",continuous:"frying",rw:"gukaranga"},
+roast:{present:"roast",past:"roasted",future:"will roast",continuous:"roasting",rw:"kotsa"},
+peel:{present:"peel",past:"peeled",future:"will peel",continuous:"peeling",rw:"guhata"},
+slice:{present:"slice",past:"sliced",future:"will slice",continuous:"slicing",rw:"gukata mo uduce"},
+stir:{present:"stir",past:"stirred",future:"will stir",continuous:"stirring",rw:"kuvanga"},
+mix:{present:"mix",past:"mixed",future:"will mix",continuous:"mixing",rw:"kuvanga"},
+pour:{present:"pour",past:"poured",future:"will pour",continuous:"pouring",rw:"gusuka"},
+taste:{present:"taste",past:"tasted",future:"will taste",continuous:"tasting",rw:"kuryoherwa cyangwa kuryoha"},
+smell:{present:"smell",past:"smelled",future:"will smell",continuous:"smelling",rw:"kunuka cyangwa guhumurirwa"},
+bite:{present:"bite",past:"bit",future:"will bite",continuous:"biting",rw:"kuruma"},
+chew:{present:"chew",past:"chewed",future:"will chew",continuous:"chewing",rw:"guhekenya"},
+swallow:{present:"swallow",past:"swallowed",future:"will swallow",continuous:"swallowing",rw:"kumira"},
+breathe:{present:"breathe",past:"breathed",future:"will breathe",continuous:"breathing",rw:"guhumeka"},
+cough:{present:"cough",past:"coughed",future:"will cough",continuous:"coughing",rw:"gukorora"},
+sneeze:{present:"sneeze",past:"sneezed",future:"will sneeze",continuous:"sneezing",rw:"kwitsamura"},
+blink:{present:"blink",past:"blinked",future:"will blink",continuous:"blinking",rw:"guhumbya"},
+nod:{present:"nod",past:"nodded",future:"will nod",continuous:"nodding",rw:"kwikiriza uzunguza umutwe"},
+wave:{present:"wave",past:"waved",future:"will wave",continuous:"waving",rw:"kupepera"},
+point:{present:"point",past:"pointed",future:"will point",continuous:"pointing",rw:"kwerekana urutoki"},
+touch:{present:"touch",past:"touched",future:"will touch",continuous:"touching",rw:"gukoraho"},
+push:{present:"push",past:"pushed",future:"will push",continuous:"pushing",rw:"gusunika"},
+pull:{present:"pull",past:"pulled",future:"will pull",continuous:"pulling",rw:"gukurura"},
+lift:{present:"lift",past:"lifted",future:"will lift",continuous:"lifting",rw:"kuzamura"},
+drop:{present:"drop",past:"dropped",future:"will drop",continuous:"dropping",rw:"kugusha"},
+pick:{present:"pick",past:"picked",future:"will pick",continuous:"picking",rw:"gutora"},
+kick:{present:"kick",past:"kicked",future:"will kick",continuous:"kicking",rw:"gutera umugeri"},
+climb:{present:"climb",past:"climbed",future:"will climb",continuous:"climbing",rw:"kurira"},
+crawl:{present:"crawl",past:"crawled",future:"will crawl",continuous:"crawling",rw:"kunyonga"},
+jump:{present:"jump",past:"jumped",future:"will jump",continuous:"jumping",rw:"gusimbuka"},
+hop:{present:"hop",past:"hopped",future:"will hop",continuous:"hopping",rw:"gusimbuka ku kuguru kumwe"},
+skip:{present:"skip",past:"skipped",future:"will skip",continuous:"skipping",rw:"gusimbuka cyangwa kurenga"},
+march:{present:"march",past:"marched",future:"will march",continuous:"marching",rw:"kugenda mu murongo"},
+ride:{present:"ride",past:"rode",future:"will ride",continuous:"riding",rw:"kugenda ku igare cyangwa ku nyamaswa"},
+sail:{present:"sail",past:"sailed",future:"will sail",continuous:"sailing",rw:"kugenda mu bwato"},
+row:{present:"row",past:"rowed",future:"will row",continuous:"rowing",rw:"gutwara ubwato ukoresheje ingashya"},
+skate:{present:"skate",past:"skated",future:"will skate",continuous:"skating",rw:"kunyerera ukoresheje skate"},
+ski:{present:"ski",past:"skied",future:"will ski",continuous:"skiing",rw:"kunyerera ku rubura"},
+dive:{present:"dive",past:"dived",future:"will dive",continuous:"diving",rw:"kwibira mu mazi"},
+surf:{present:"surf",past:"surfed",future:"will surf",continuous:"surfing",rw:"kunyerera ku mipfunda y'amazi"},
+camp:{present:"camp",past:"camped",future:"will camp",continuous:"camping",rw:"gukambika"},
+hike:{present:"hike",past:"hiked",future:"will hike",continuous:"hiking",rw:"gutembera n'amaguru mu nzira ndende"},
+explore:{present:"explore",past:"explored",future:"will explore",continuous:"exploring",rw:"gushakisha no kumenya ahantu"},
+wander:{present:"wander",past:"wandered",future:"will wander",continuous:"wandering",rw:"kuzerera"},
+roam:{present:"roam",past:"roamed",future:"will roam",continuous:"roaming",rw:"kuzenguruka ahantu"},
+return:{present:"return",past:"returned",future:"will return",continuous:"returning",rw:"kugaruka"},
+enter:{present:"enter",past:"entered",future:"will enter",continuous:"entering",rw:"kwinjira"},
+exit:{present:"exit",past:"exited",future:"will exit",continuous:"exiting",rw:"gusohoka"},
+cross:{present:"cross",past:"crossed",future:"will cross",continuous:"crossing",rw:"kwambuka"},
+pass:{present:"pass",past:"passed",future:"will pass",continuous:"passing",rw:"kunyura"},
+follow:{present:"follow",past:"followed",future:"will follow",continuous:"following",rw:"gukurikira"},
+lead:{present:"lead",past:"led",future:"will lead",continuous:"leading",rw:"kuyobora"},
+guide:{present:"guide",past:"guided",future:"will guide",continuous:"guiding",rw:"kuyobora no kwereka inzira"},
+direct:{present:"direct",past:"directed",future:"will direct",continuous:"directing",rw:"kuyobora"},
+manage:{present:"manage",past:"managed",future:"will manage",continuous:"managing",rw:"gucunga"},
+organize:{present:"organize",past:"organized",future:"will organize",continuous:"organizing",rw:"gutegura"},
+arrange:{present:"arrange",past:"arranged",future:"will arrange",continuous:"arranging",rw:"gutondeka"},
+prepare:{present:"prepare",past:"prepared",future:"will prepare",continuous:"preparing",rw:"kwitegura"},
+plan:{present:"plan",past:"planned",future:"will plan",continuous:"planning",rw:"gutegura gahunda"},
+schedule:{present:"schedule",past:"scheduled",future:"will schedule",continuous:"scheduling",rw:"gushyira ku ngengabihe"},
+decide:{present:"decide",past:"decided",future:"will decide",continuous:"deciding",rw:"gufata icyemezo"},
+agree:{present:"agree",past:"agreed",future:"will agree",continuous:"agreeing",rw:"kwemeranya"},
+disagree:{present:"disagree",past:"disagreed",future:"will disagree",continuous:"disagreeing",rw:"kutemeranya"},
+promise:{present:"promise",past:"promised",future:"will promise",continuous:"promising",rw:"gusezeranya"},
+suggest:{present:"suggest",past:"suggested",future:"will suggest",continuous:"suggesting",rw:"gutanga igitekerezo"},
+recommend:{present:"recommend",past:"recommended",future:"will recommend",continuous:"recommending",rw:"kugira inama yo guhitamo"},
+advise:{present:"advise",past:"advised",future:"will advise",continuous:"advising",rw:"kugira inama"},
+warn:{present:"warn",past:"warned",future:"will warn",continuous:"warning",rw:"kuburira"},
+remind:{present:"remind",past:"reminded",future:"will remind",continuous:"reminding",rw:"kwibutsa"},
+invite:{present:"invite",past:"invited",future:"will invite",continuous:"inviting",rw:"gutumira"},
+welcome:{present:"welcome",past:"welcomed",future:"will welcome",continuous:"welcoming",rw:"kwakira"},
+greet:{present:"greet",past:"greeted",future:"will greet",continuous:"greeting",rw:"kuramutsa"},
+introduce:{present:"introduce",past:"introduced",future:"will introduce",continuous:"introducing",rw:"kumenyekanisha"},
+thank:{present:"thank",past:"thanked",future:"will thank",continuous:"thanking",rw:"gushimira"},
+apologize:{present:"apologize",past:"apologized",future:"will apologize",continuous:"apologizing",rw:"gusaba imbabazi"},
+forgive:{present:"forgive",past:"forgave",future:"will forgive",continuous:"forgiving",rw:"kubabarira"},
+trust:{present:"trust",past:"trusted",future:"will trust",continuous:"trusting",rw:"kwizera"},
+respect:{present:"respect",past:"respected",future:"will respect",continuous:"respecting",rw:"kubaha"},
+admire:{present:"admire",past:"admired",future:"will admire",continuous:"admiring",rw:"kwishimira umuntu"},
+appreciate:{present:"appreciate",past:"appreciated",future:"will appreciate",continuous:"appreciating",rw:"gushima no guha agaciro"},
+celebrate:{present:"celebrate",past:"celebrated",future:"will celebrate",continuous:"celebrating",rw:"kwizihiza"},
+enjoy:{present:"enjoy",past:"enjoyed",future:"will enjoy",continuous:"enjoying",rw:"kwishimira"},
+prefer:{present:"prefer",past:"preferred",future:"will prefer",continuous:"preferring",rw:"guhitamo ikintu kurusha ikindi"},
+hate:{present:"hate",past:"hated",future:"will hate",continuous:"hating",rw:"kwanga cyane"},
+fear:{present:"fear",past:"feared",future:"will fear",continuous:"fearing",rw:"gutinya"},
+worry:{present:"worry",past:"worried",future:"will worry",continuous:"worrying",rw:"guhangayika"},
+hope:{present:"hope",past:"hoped",future:"will hope",continuous:"hoping",rw:"kwiringira"},
+wish:{present:"wish",past:"wished",future:"will wish",continuous:"wishing",rw:"kwifuza"},
+expect:{present:"expect",past:"expected",future:"will expect",continuous:"expecting",rw:"kwitega"},
+believe:{present:"believe",past:"believed",future:"will believe",continuous:"believing",rw:"kwemera"},
+doubt:{present:"doubt",past:"doubted",future:"will doubt",continuous:"doubting",rw:"gushidikanya"},
+imagine:{present:"imagine",past:"imagined",future:"will imagine",continuous:"imagining",rw:"kwiyumvisha"},
+wonder:{present:"wonder",past:"wondered",future:"will wonder",continuous:"wondering",rw:"kwibaza"},
+guess:{present:"guess",past:"guessed",future:"will guess",continuous:"guessing",rw:"gukeka"},
+suppose:{present:"suppose",past:"supposed",future:"will suppose",continuous:"supposing",rw:"kwibwira"},
+realize:{present:"realize",past:"realized",future:"will realize",continuous:"realizing",rw:"gutahura"},
+recognize:{present:"recognize",past:"recognized",future:"will recognize",continuous:"recognizing",rw:"kumenya umuntu cyangwa ikintu"},
+notice:{present:"notice",past:"noticed",future:"will notice",continuous:"noticing",rw:"kubona no kwitegereza"},
+observe:{present:"observe",past:"observed",future:"will observe",continuous:"observing",rw:"kwitegereza"},
+inspect:{present:"inspect",past:"inspected",future:"will inspect",continuous:"inspecting",rw:"kugenzura neza"},
+examine:{present:"examine",past:"examined",future:"will examine",continuous:"examining",rw:"gusuzuma"},
+test:{present:"test",past:"tested",future:"will test",continuous:"testing",rw:"kugerageza"},
+prove:{present:"prove",past:"proved",future:"will prove",continuous:"proving",rw:"kugaragaza ko ari ukuri"},
+compare:{present:"compare",past:"compared",future:"will compare",continuous:"comparing",rw:"kugereranya"},
+contrast:{present:"contrast",past:"contrasted",future:"will contrast",continuous:"contrasting",rw:"kugaragaza itandukaniro"},
+measure:{present:"measure",past:"measured",future:"will measure",continuous:"measuring",rw:"gupima"},
+weigh:{present:"weigh",past:"weighed",future:"will weigh",continuous:"weighing",rw:"gupima uburemere"},
+estimate:{present:"estimate",past:"estimated",future:"will estimate",continuous:"estimating",rw:"kugereranya ingano"},
+record:{present:"record",past:"recorded",future:"will record",continuous:"recording",rw:"kwandika amakuru cyangwa gufata amajwi"},
+document:{present:"document",past:"documented",future:"will document",continuous:"documenting",rw:"gushyira amakuru mu nyandiko"},
+report:{present:"report",past:"reported",future:"will report",continuous:"reporting",rw:"gutanga raporo"},
+describe:{present:"describe",past:"described",future:"will describe",continuous:"describing",rw:"gusobanura uko ikintu kimeze"},
+mention:{present:"mention",past:"mentioned",future:"will mention",continuous:"mentioning",rw:"kuvuga ku kintu"},
+discuss:{present:"discuss",past:"discussed",future:"will discuss",continuous:"discussing",rw:"kuganira ku kibazo"},
+debate:{present:"debate",past:"debated",future:"will debate",continuous:"debating",rw:"kujya impaka"},
+argue:{present:"argue",past:"argued",future:"will argue",continuous:"arguing",rw:"kujya impaka"},
+complain:{present:"complain",past:"complained",future:"will complain",continuous:"complaining",rw:"kwitotomba"},
+respond:{present:"respond",past:"responded",future:"will respond",continuous:"responding",rw:"gusubiza"},
+reply:{present:"reply",past:"replied",future:"will reply",continuous:"replying",rw:"gusubiza ubutumwa"},
+repeat:{present:"repeat",past:"repeated",future:"will repeat",continuous:"repeating",rw:"gusubiramo"},
+pronounce:{present:"pronounce",past:"pronounced",future:"will pronounce",continuous:"pronouncing",rw:"kuvuga ijambo neza"},
+spell:{present:"spell",past:"spelled",future:"will spell",continuous:"spelling",rw:"kuvuga inyuguti zigize ijambo"},
+translate:{present:"translate",past:"translated",future:"will translate",continuous:"translating",rw:"guhindura ururimi"},
+interpret:{present:"interpret",past:"interpreted",future:"will interpret",continuous:"interpreting",rw:"gusobanura igisobanuro"},
+memorize:{present:"memorize",past:"memorized",future:"will memorize",continuous:"memorizing",rw:" gufata mu mutwe"},
+practice:{present:"practice",past:"practiced",future:"will practice",continuous:"practicing",rw:"kwimenyereza"},
+train:{present:"train",past:"trained",future:"will train",continuous:"training",rw:"gutoza"},
+improve:{present:"improve",past:"improved",future:"will improve",continuous:"improving",rw:"kunonosora"},
+develop:{present:"develop",past:"developed",future:"will develop",continuous:"developing",rw:"guteza imbere"},
+progress:{present:"progress",past:"progressed",future:"will progress",continuous:"progressing",rw:"gutera imbere"},
+succeed:{present:"succeed",past:"succeeded",future:"will succeed",continuous:"succeeding",rw:"kugira icyo ugeraho"},
+fail:{present:"fail",past:"failed",future:"will fail",continuous:"failing",rw:"kunanirwa"},
+attempt:{present:"attempt",past:"attempted",future:"will attempt",continuous:"attempting",rw:"kugerageza"},
+try:{present:"try",past:"tried",future:"will try",continuous:"trying",rw:"kugerageza"},
+achieve:{present:"achieve",past:"achieved",future:"will achieve",continuous:"achieving",rw:"kugeraho intego"},
+earn:{present:"earn",past:"earned",future:"will earn",continuous:"earning",rw:"kwinjiza amafaranga"},
+spend:{present:"spend",past:"spent",future:"will spend",continuous:"spending",rw:"gukoresha amafaranga cyangwa igihe"},
+borrow:{present:"borrow",past:"borrowed",future:"will borrow",continuous:"borrowing",rw:"kuguriza umuntu ikintu"},
+lend:{present:"lend",past:"lent",future:"will lend",continuous:"lending",rw:"kuguriza"},
+owe:{present:"owe",past:"owed",future:"will owe",continuous:"owing",rw:"kugira umwenda"},
+cost:{present:"cost",past:"cost",future:"will cost",continuous:"costing",rw:"kugura amafaranga runaka"},
+charge:{present:"charge",past:"charged",future:"will charge",continuous:"charging",rw:"kwishyuza"},
+afford:{present:"afford",past:"afforded",future:"will afford",continuous:"affording",rw:"kubasha kwishyura"},
+invest:{present:"invest",past:"invested",future:"will invest",continuous:"investing",rw:"gushora imari"},
+waste:{present:"waste",past:"wasted",future:"will waste",continuous:"wasting",rw:"gusesagura"},
+collect:{present:"collect",past:"collected",future:"will collect",continuous:"collecting",rw:"gukusanya"},
+gather:{present:"gather",past:"gathered",future:"will gather",continuous:"gathering",rw:"guteranya"},
+  };
+
+function smartAI(){
+let v=document.getElementById("word").value.toLowerCase().trim();
+if(verbs[v]){
+let d=verbs[v];
+document.getElementById("res").innerHTML=
+`Present:${d.present}<br>Past:${d.past}<br>Future:${d.future}<br>Continuous:${d.continuous}<br>Kinyarwanda:${d.rw}`;
+}else{
+document.getElementById("res").innerText="Verb not found";
+}
+}
+
+function speak(){
+speechSynthesis.speak(new SpeechSynthesisUtterance(document.getElementById("res").innerText));
+}
+
+/* MATH */
+let expr="";
+function addSymbol(v){expr+=v;document.getElementById("expr").value=expr;}
+function clearExpr(){expr="";document.getElementById("expr").value="";}
+function calculate(){document.getElementById("r1").innerText=eval(expr);expr="";}
+
+function getAllTrig(){
+let a=parseFloat(document.getElementById("ang").value);
+let r=a*Math.PI/180;
+document.getElementById("r2").innerHTML=
+"sin:"+Math.sin(r)+"<br>cos:"+Math.cos(r)+"<br>tan:"+Math.tan(r);
+}
+
+function shape(t){
+if(t=="rect"){
+let l=prompt("Length:");
+let w=prompt("Width:");
+document.getElementById("r3").innerHTML="Area:"+l*w;
+}
+if(t=="square"){
+let s=prompt("Side:");
+document.getElementById("r3").innerHTML="Area:"+s*s;
+}
+if(t=="circle"){
+let r=prompt("Radius:");
+document.getElementById("r3").innerHTML="Area:"+(Math.PI*r*r).toFixed(2);
+}
+if(t=="triangle"){
+let a=prompt("A:");
+let b=prompt("B:");
+let c=prompt("C:");
+document.getElementById("r3").innerHTML="Perimeter:"+(+a + +b + +c);
+}
+if(t=="tube"){
+let r=prompt("Radius:");
+let h=prompt("Height:");
+document.getElementById("r3").innerHTML="Volume:"+(Math.PI*r*r*h).toFixed(2);
+}
+}
+
+/* BACKGROUND */
+const backgrounds=[
+"https://images.unsplash.com/photo-1523240795612-9a054b0db644",
+"https://images.unsplash.com/photo-1588072432836-e10032774350",
+"https://images.unsplash.com/photo-1581090700227-1e37b190418e",
+"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+"https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0"
+];
+
+let i=0;
+setInterval(()=>{
+document.getElementById("bg").style.backgroundImage="url('"+backgrounds[i]+"')";
+i=(i+1)%backgrounds.length;
+},5000);
+
+
+
+</script>
+</body>
+</html>
